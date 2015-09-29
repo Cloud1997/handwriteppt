@@ -2,19 +2,18 @@ package handwriteppt;
 
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JFrame;
 
+/**
+ * @author zhongfan
+ *
+ */
 public class DrawPad extends JFrame
-    implements ActionListener
 {
-  private DrawPadToolBar         drawToolbar;
-  private List<PresentationPage> presentationPages = new ArrayList<PresentationPage>();
-  private int                    currentPageIndex  = 0;
+  private DrawPadToolBar drawToolbar;
+  private int            currentPageIndex = 0;
+  private PagesList      pagesList;
 
   public int getCurrentPageIndex()
   {
@@ -26,6 +25,11 @@ public class DrawPad extends JFrame
     this.currentPageIndex = currentPageIndex;
   }
 
+  public int getPagesCount()
+  {
+    return pagesList.getModel().getSize();
+  }
+
   public DrawPad(String title) throws HeadlessException
   {
     super(title);
@@ -35,14 +39,20 @@ public class DrawPad extends JFrame
   private void initialUiComps()
   {
     drawToolbar = new DrawPadToolBar(this);
+    pagesList = new PagesList(this);
+    //pagesList.addListSelectionListener(this);
+    //    pagesList.addMouseListener(this);
     loadPagesFromFile("");
-    add(drawToolbar, BorderLayout.NORTH);
-    //presentationPages.add(new PresentationPage());
-    if (!presentationPages.isEmpty())
+    if (pagesList.getModel().getSize() != 0)
     {
-      //add(presentationPages.get(currentPageIndex), BorderLayout.CENTER);
-      setLayeredPane(presentationPages.get(currentPageIndex));
+      add(pagesList.getModel().getElementAt(currentPageIndex), BorderLayout.CENTER);
     }
+    else
+    {
+      addNewPage();
+    }
+    add(drawToolbar, BorderLayout.NORTH);
+    add(pagesList, BorderLayout.WEST);
     setExtendedState(JFrame.MAXIMIZED_BOTH);
     setVisible(true);
     validate();
@@ -59,22 +69,13 @@ public class DrawPad extends JFrame
     DrawPad drawpad = new DrawPad("test");
   }
 
-  @Override
-  public void actionPerformed(ActionEvent e)
+  public void addNewPage()
   {
-    if (e.getActionCommand().equals(ActionCommandList.ADD_NEW_PAGE))
-    {
-      //      if (!presentationPages.isEmpty())
-      //      {
-      //        remove(presentationPages.get(currentPageIndex));
-      //      }
-      PresentationPage addedPage = new PresentationPage();
-      presentationPages.add(addedPage);
-      currentPageIndex = presentationPages.size() - 1;
-      setLayeredPane(addedPage);
-      //add(addedPage, BorderLayout.CENTER, 0);
-
-    }
+    PresentationPage addedPage = new PresentationPage(
+        String.format(PagesList.PAGE_NAME_FORMATE, pagesList.getModel().size() + 1));
+    pagesList.getModel().addElement(addedPage);
+    add(addedPage, BorderLayout.CENTER);
+    pagesList.setSelectedIndex(pagesList.getModel().size() - 1);
   }
 
 }

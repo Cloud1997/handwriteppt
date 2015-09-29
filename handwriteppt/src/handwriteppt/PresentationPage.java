@@ -8,13 +8,25 @@ import javax.swing.JLayeredPane;
 
 public class PresentationPage extends JLayeredPane
 {
-  private List<PresentationLayer> layers = new ArrayList<PresentationLayer>();
+  private List<PresentationLayer> layers    = new ArrayList<PresentationLayer>();
+  private static int              testIndex = 0;
+  private String                  name;
 
-  public PresentationPage()
+  public String getName()
+  {
+    return name;
+  }
+
+  public void setName(String name)
+  {
+    this.name = name;
+  }
+
+  public PresentationPage(String name)
   {
     super();
-    layers.add(new PresentationLayer("background"));
-    add(layers.get(0), new Integer(-1));
+    this.name = name;
+    layers.add(new PresentationLayer(name));
   }
 
   @Override
@@ -28,6 +40,23 @@ public class PresentationPage extends JLayeredPane
         layer.paint(g);
       }
     }
+  }
+
+  public PresentationLayer getLayerByIndex(int index)
+  {
+    return layers.get(index);
+  }
+
+  public PresentationLayer getContentPane()
+  {
+    return layers.get(0);
+  }
+
+  @Override
+  public String toString()
+  {
+    // TODO Auto-generated method stub
+    return name;
   }
 
 }

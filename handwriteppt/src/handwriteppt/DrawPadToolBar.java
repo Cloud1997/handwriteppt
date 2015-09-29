@@ -3,6 +3,7 @@ package handwriteppt;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JToolBar;
 
@@ -15,6 +16,7 @@ public class DrawPadToolBar extends JToolBar
   private JButton        rubberBtn;
   private JLabel         strokeLabel;
   private StrokeSpinner  stroke;
+  private JFrame         parent;
 
   public DrawPadToolBar()
   {
@@ -22,12 +24,19 @@ public class DrawPadToolBar extends JToolBar
     initialToolBar();
   }
 
-  public DrawPadToolBar(ActionListener al)
+  public DrawPadToolBar(JFrame parent)
   {
     super();
-    this.al = al;
+    this.parent = parent;
     initialToolBar();
   }
+
+  //  public DrawPadToolBar(ActionListener al)
+  //  {
+  //    super();
+  //    this.al = al;
+  //    initialToolBar();
+  //  }
 
   public DrawPadToolBar(int orientation)
   {
@@ -62,14 +71,13 @@ public class DrawPadToolBar extends JToolBar
   {
     drawLineBtn = new JButton(ActionCommandList.DRAW_LINE);
     rubberBtn = new JButton(ActionCommandList.RUBBER);
-    addNewPageBtn = new JButton(ActionCommandList.ADD_NEW_PAGE);
+    addNewPageBtn = new NewPageBtn(ActionCommandList.ADD_NEW_PAGE, parent);
     strokeLabel = new JLabel(strokeLabelName);
     stroke = new StrokeSpinner(1.0, 1.0, 20.0, 0.1);
     if (al != null)
     {
       drawLineBtn.addActionListener(al);
       rubberBtn.addActionListener(al);
-      addNewPageBtn.addActionListener(al);
     }
   }
 

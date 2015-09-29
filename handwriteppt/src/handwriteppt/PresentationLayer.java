@@ -1,5 +1,6 @@
 package handwriteppt;
 
+import java.awt.BorderLayout;
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
@@ -33,15 +34,15 @@ public class PresentationLayer extends JPanel
   {
     super();
     this.name = name;
+    setLayout(new BorderLayout());
     isHidden = false;
   }
 
   @Override
   public void paint(Graphics g)
   {
-    g.drawString("PresentationLayer", 500, 500);
-    System.out.println("PresentationLayer");
     super.paint(g);
+    g.drawString(name, 500, 500);
   }
 
 }
