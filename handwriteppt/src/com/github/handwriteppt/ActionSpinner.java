@@ -1,4 +1,4 @@
-package handwriteppt;
+package com.github.handwriteppt;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerModel;
 import javax.swing.event.ChangeEvent;

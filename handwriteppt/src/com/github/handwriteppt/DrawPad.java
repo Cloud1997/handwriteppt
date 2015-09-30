@@ -1,4 +1,4 @@
-package handwriteppt;
+package com.github.handwriteppt;
 
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
@@ -14,6 +14,7 @@ public class DrawPad extends JFrame
   private DrawPadToolBar drawToolbar;
   private int            currentPageIndex = 0;
   private PagesList      pagesList;
+  private LayerList      layersList;
 
   public int getCurrentPageIndex()
   {
@@ -40,8 +41,7 @@ public class DrawPad extends JFrame
   {
     drawToolbar = new DrawPadToolBar(this);
     pagesList = new PagesList(this);
-    //pagesList.addListSelectionListener(this);
-    //    pagesList.addMouseListener(this);
+    layersList = new LayerList(this);
     loadPagesFromFile("");
     if (pagesList.getModel().getSize() != 0)
     {
@@ -53,6 +53,7 @@ public class DrawPad extends JFrame
     }
     add(drawToolbar, BorderLayout.NORTH);
     add(pagesList, BorderLayout.WEST);
+    add(layersList, BorderLayout.EAST);
     setExtendedState(JFrame.MAXIMIZED_BOTH);
     setVisible(true);
     validate();

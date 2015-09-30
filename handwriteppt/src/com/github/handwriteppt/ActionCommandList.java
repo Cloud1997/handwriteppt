@@ -1,4 +1,4 @@
-package handwriteppt;
+package com.github.handwriteppt;
 
 public class ActionCommandList
 {

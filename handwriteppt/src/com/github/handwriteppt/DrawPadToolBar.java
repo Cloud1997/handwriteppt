@@ -1,4 +1,4 @@
-package handwriteppt;
+package com.github.handwriteppt;
 
 import java.awt.event.ActionListener;
 
