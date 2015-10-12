@@ -6,6 +6,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.ByteArrayOutputStream;
@@ -23,7 +25,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import com.github.handwriteppt.Action;
 import com.github.handwriteppt.projector.gui.components.ControlPanel;
 import com.github.handwriteppt.projector.gui.components.ShowPanel;
 
@@ -42,26 +43,34 @@ public class Projector {
 	private Layer currentLayer;
 	private GridBagConstraints gc=new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0);
 	
-	private static final Projector instance=new Projector();
+	private static Projector instance;
 	
 	public static Projector getInstance(){
 		return instance;
 	}
-
-	public static void main(String[] args) {
-		Projector pj=instance;
-		pj.load("res/show.zip");
-		SwingUtilities.invokeLater(new Runnable() {
+	
+	public static void show(String file){
+		instance=new Projector();
+		instance.load(file);
+	SwingUtilities.invokeLater(new Runnable() {
 			
 			@Override
 			public void run() {
-				pj.initComponents();
-				pj.prepareListeners();
-				pj.start();
+				
+				instance.initComponents();
+				instance.prepareListeners();
+				instance.start();
 			}
 		});
+	}
 	
-		
+	public void close(){
+		window.dispose();
+		instance=null;
+	}
+
+	public static void main(String[] args) {
+		show("res/show.zip");
 	}
 	
 	public void load(String file){
@@ -102,6 +111,7 @@ public class Projector {
 	}
 	
 	public void initComponents(){
+		
 		window.setContentPane(mainBoard);
 		mainBoard.setOpaque(true);
 		mainBoard.setLayout(new GridBagLayout());
@@ -119,7 +129,19 @@ public class Projector {
 	
 	
 	private void prepareListeners(){
-		
+		window.addKeyListener(new KeyAdapter() {
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(e.getKeyCode()==KeyEvent.VK_SPACE){
+					layerForward();
+				}else if(e.getKeyCode()==KeyEvent.VK_ESCAPE){
+					close();
+				}
+			}
+			
+		});
 		controlPanel.getPanel().addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseExited(MouseEvent e) {
@@ -202,5 +224,6 @@ public class Projector {
 			pageBack();
 		}
 	}
+
 
 }

@@ -37,19 +37,6 @@ public class ControlPanel {
 		action=new QuitAction();
 		addItem(new DefaultItem(icon,action));
 		panel.setPreferredSize(new Dimension(100, 50));
-//		panel.addMouseListener(new MouseAdapter() {
-//
-//			@Override
-//			public void mouseEntered(MouseEvent e) {
-//				panel.setVisible(true);
-//			}
-//
-//			@Override
-//			public void mouseExited(MouseEvent e) {
-//				panel.setVisible(false);
-//			}
-//			
-//		});
 	}
 	private void addItem(Item it){
 		gc.gridx=gc.gridx+1;
