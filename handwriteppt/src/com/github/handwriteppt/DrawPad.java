@@ -2,7 +2,10 @@ package com.github.handwriteppt;
 
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
+import java.io.File;
+import java.util.Properties;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 
 /**
@@ -15,6 +18,8 @@ public class DrawPad extends JFrame
   private int            currentPageIndex = 0;
   private PagesList      pagesList;
   private LayerList      layersList;
+  private String         saveFolder;
+  private String         fileNameFormat   = "%s\\%d-%d.png";
 
   public int getCurrentPageIndex()
   {
@@ -110,6 +115,41 @@ public class DrawPad extends JFrame
   public boolean isRubberMode()
   {
     return drawToolbar.getDrawRubberBtn().isRubberMode();
+  }
+
+  public void saveMaterial()
+  {
+    createMaterialFolderIfNeeded();
+    for (int i = 0; i < pagesList.getModel().size(); i++)
+    {
+      DefaultListModel<PresentationLayer> layers = pagesList.getModel().get(i).getLayers();
+      for (int j = 0; j < layers.size(); j++)
+      {
+        String fileName = String.format(fileNameFormat, saveFolder, i + 1, j + 1);
+        layers.getElementAt(layers.size() - 1 - j).saveAsPng(fileName);
+      }
+    }
+    try
+    {
+      Properties properties = System.getProperties();
+      ZipUtils.compress(saveFolder, properties.getProperty("user.dir") + "\\test.zip");
+    }
+    catch (Exception e)
+    {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
+  private void createMaterialFolderIfNeeded()
+  {
+    Properties properties = System.getProperties();
+    saveFolder = properties.getProperty("user.dir") + "\\materials";
+    File materialFolder = new File(saveFolder);
+    if (!materialFolder.exists())
+    {
+      materialFolder.mkdir();
+    }
   }
 
 }

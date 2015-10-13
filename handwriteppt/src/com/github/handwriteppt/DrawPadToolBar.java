@@ -9,10 +9,11 @@ import javax.swing.JToolBar;
 
 public class DrawPadToolBar extends JToolBar
 {
-  private static String strokeLabelName = "Stroke";
-  private JButton       addNewPageBtn;
-  private JButton       addNewLayerBtn;
-  private RubberBtn     drawRubberBtn;
+  private JButton   addNewPageBtn;
+  private JButton   addNewLayerBtn;
+  private JButton   saveBtn;
+  private JButton   showBtn;
+  private RubberBtn drawRubberBtn;
 
   public RubberBtn getDrawRubberBtn()
   {
@@ -67,6 +68,8 @@ public class DrawPadToolBar extends JToolBar
     add(addNewPageBtn);
     add(addNewLayerBtn);
     add(drawRubberBtn);
+    add(saveBtn);
+    add(showBtn);
     add(strokeLabel);
     add(stroke);
     setSize(getPreferredSize());
@@ -77,12 +80,10 @@ public class DrawPadToolBar extends JToolBar
     drawRubberBtn = new RubberBtn(ConsantList.RUBBER, parent);
     addNewPageBtn = new NewPageBtn(ConsantList.ADD_NEW_PAGE, parent);
     addNewLayerBtn = new NewLayerBtn(ConsantList.ADD_NEW_LAYER, parent);
-    strokeLabel = new JLabel(strokeLabelName);
+    strokeLabel = new JLabel(ConsantList.STROKE);
     stroke = new StrokeSpinner(1.0, 1.0, 20.0, 0.1);
-    if (al != null)
-    {
-      drawRubberBtn.addActionListener(al);
-    }
+    saveBtn = new SaveBtn(ConsantList.SAVE, parent);
+    showBtn = new ShowBtn(ConsantList.SHOW, parent);
   }
 
 }

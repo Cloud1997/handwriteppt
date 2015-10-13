@@ -11,9 +11,12 @@ import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -26,7 +29,6 @@ public class PresentationLayer extends JPanel
   private BufferedImage       image;
   private Graphics2D          currentG2;
   private List<BufferedImage> historyImageList = new ArrayList<BufferedImage>();
-  private int                 eraseAreaLength  = 20;
 
   public String getName()
   {
@@ -95,7 +97,8 @@ public class PresentationLayer extends JPanel
 
   public void erase(Point startPoint)
   {
-    currentG2.fillRect(startPoint.x, startPoint.y, eraseAreaLength, eraseAreaLength);
+    int clearWidth = Math.round(((DrawPad)parent).getCurrentStroke()) + 2;
+    currentG2.fillRect(startPoint.x, startPoint.y, clearWidth, clearWidth);
   }
 
   public void drawLine(Point wayPoint)
@@ -119,6 +122,20 @@ public class PresentationLayer extends JPanel
     if (!historyImageList.isEmpty())
     {
       historyImageList.remove(historyImageList.size() - 1);
+    }
+  }
+
+  public void saveAsPng(String fileName)
+  {
+    File outputFile = new File(fileName);
+    try
+    {
+      ImageIO.write(historyImageList.get(historyImageList.size() - 1), "png", outputFile);
+    }
+    catch (IOException e)
+    {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
   }
 
