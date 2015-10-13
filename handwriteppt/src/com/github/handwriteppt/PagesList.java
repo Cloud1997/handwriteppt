@@ -4,7 +4,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.DefaultListModel;
-import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -13,10 +12,20 @@ import javax.swing.event.ListSelectionListener;
 public class PagesList extends JList<PresentationPage>
     implements ListSelectionListener, MouseListener
 {
-  private boolean            isDeleteOpStarted = false;
-  private int                currentPageIndex  = 0;
-  private JFrame             parent;
-  public static final String PAGE_NAME_FORMATE = "Page%d";
+  private boolean isDeleteOpStarted = false;
+  private int     currentPageIndex  = 0;
+
+  public int getCurrentPageIndex()
+  {
+    return currentPageIndex;
+  }
+
+  public void setCurrentPageIndex(int currentPageIndex)
+  {
+    this.currentPageIndex = currentPageIndex;
+  }
+
+  private DrawPad parent;
 
   public boolean isDeleteOpStarted()
   {
@@ -28,29 +37,28 @@ public class PagesList extends JList<PresentationPage>
     this.isDeleteOpStarted = isDeleteOp;
   }
 
-  public PagesList(JFrame parent)
+  public PagesList(DrawPad parent)
   {
     super(new DefaultListModel<PresentationPage>());
     setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     this.parent = parent;
     addListSelectionListener(this);
     addMouseListener(this);
-    // TODO Auto-generated constructor stub
   }
 
   @Override
   public DefaultListModel<PresentationPage> getModel()
   {
-    // TODO Auto-generated method stub
     return (DefaultListModel<PresentationPage>)super.getModel();
   }
 
   @Override
   public void mouseClicked(MouseEvent e)
   {
+    int currentIndex = locationToIndex(e.getPoint());
     if ((e.getButton() == MouseEvent.BUTTON3))
     {
-      deleteOnePage(locationToIndex(e.getPoint()));
+      deleteOnePage(currentIndex);
     }
     else if (e.getButton() == MouseEvent.BUTTON1)
     {
@@ -65,28 +73,24 @@ public class PagesList extends JList<PresentationPage>
   @Override
   public void mousePressed(MouseEvent e)
   {
-    // TODO Auto-generated method stub
 
   }
 
   @Override
   public void mouseReleased(MouseEvent e)
   {
-    // TODO Auto-generated method stub
 
   }
 
   @Override
   public void mouseEntered(MouseEvent e)
   {
-    // TODO Auto-generated method stub
 
   }
 
   @Override
   public void mouseExited(MouseEvent e)
   {
-    // TODO Auto-generated method stub
 
   }
 
@@ -98,6 +102,7 @@ public class PagesList extends JList<PresentationPage>
       getModel().getElementAt(currentPageIndex).setVisible(false);
       currentPageIndex = getSelectedIndex();
       getModel().getElementAt(currentPageIndex).setVisible(true);
+      parent.switchPage(currentPageIndex);
     }
   }
 
@@ -109,7 +114,7 @@ public class PagesList extends JList<PresentationPage>
     getModel().removeElementAt(indexToBeRemoved);
     if (getModel().size() == 0)
     {
-      ((DrawPad)parent).addNewPage();
+      parent.addNewPage();
     }
     else if (indexToBeRemoved == getModel().size())
     {
@@ -120,7 +125,7 @@ public class PagesList extends JList<PresentationPage>
       currentPageIndex = indexToBeRemoved;
       for (int i = indexToBeRemoved; i < getModel().size(); i++)
       {
-        getModel().getElementAt(i).setName(String.format(PAGE_NAME_FORMATE, i + 1));
+        getModel().getElementAt(i).setName(String.format(ConsantList.PAGE_NAME_FORMATE, i + 1));
       }
     }
     isDeleteOpStarted = false;

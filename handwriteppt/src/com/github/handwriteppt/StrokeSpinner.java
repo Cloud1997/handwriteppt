@@ -2,7 +2,6 @@ package com.github.handwriteppt;
 
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
 
 public class StrokeSpinner extends ActionSpinner
 {
@@ -25,13 +24,6 @@ public class StrokeSpinner extends ActionSpinner
   public StrokeSpinner(SpinnerModel model)
   {
     super(model);
-  }
-
-  @Override
-  public void stateChanged(ChangeEvent e)
-  {
-    SpinnerModel source = (SpinnerModel)e.getSource();
-    System.out.println("The value is: " + source.getValue());
   }
 
 }

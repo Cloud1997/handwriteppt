@@ -9,14 +9,26 @@ import javax.swing.JToolBar;
 
 public class DrawPadToolBar extends JToolBar
 {
-  private static String  strokeLabelName = "Stroke";
-  private JButton        addNewPageBtn;
-  private JButton        drawLineBtn;
-  private ActionListener al              = null;
-  private JButton        rubberBtn;
+  private static String strokeLabelName = "Stroke";
+  private JButton       addNewPageBtn;
+  private JButton       addNewLayerBtn;
+  private RubberBtn     drawRubberBtn;
+
+  public RubberBtn getDrawRubberBtn()
+  {
+    return drawRubberBtn;
+  }
+
+  private ActionListener al = null;
   private JLabel         strokeLabel;
   private StrokeSpinner  stroke;
-  private JFrame         parent;
+
+  public StrokeSpinner getStroke()
+  {
+    return stroke;
+  }
+
+  private JFrame parent;
 
   public DrawPadToolBar()
   {
@@ -30,13 +42,6 @@ public class DrawPadToolBar extends JToolBar
     this.parent = parent;
     initialToolBar();
   }
-
-  //  public DrawPadToolBar(ActionListener al)
-  //  {
-  //    super();
-  //    this.al = al;
-  //    initialToolBar();
-  //  }
 
   public DrawPadToolBar(int orientation)
   {
@@ -60,8 +65,8 @@ public class DrawPadToolBar extends JToolBar
   {
     initialToolBarComponents();
     add(addNewPageBtn);
-    add(drawLineBtn);
-    add(rubberBtn);
+    add(addNewLayerBtn);
+    add(drawRubberBtn);
     add(strokeLabel);
     add(stroke);
     setSize(getPreferredSize());
@@ -69,15 +74,14 @@ public class DrawPadToolBar extends JToolBar
 
   private void initialToolBarComponents()
   {
-    drawLineBtn = new JButton(ActionCommandList.DRAW_LINE);
-    rubberBtn = new JButton(ActionCommandList.RUBBER);
-    addNewPageBtn = new NewPageBtn(ActionCommandList.ADD_NEW_PAGE, parent);
+    drawRubberBtn = new RubberBtn(ConsantList.RUBBER, parent);
+    addNewPageBtn = new NewPageBtn(ConsantList.ADD_NEW_PAGE, parent);
+    addNewLayerBtn = new NewLayerBtn(ConsantList.ADD_NEW_LAYER, parent);
     strokeLabel = new JLabel(strokeLabelName);
     stroke = new StrokeSpinner(1.0, 1.0, 20.0, 0.1);
     if (al != null)
     {
-      drawLineBtn.addActionListener(al);
-      rubberBtn.addActionListener(al);
+      drawRubberBtn.addActionListener(al);
     }
   }
 

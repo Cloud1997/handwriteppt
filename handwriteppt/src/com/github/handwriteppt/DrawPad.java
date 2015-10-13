@@ -73,10 +73,43 @@ public class DrawPad extends JFrame
   public void addNewPage()
   {
     PresentationPage addedPage = new PresentationPage(
-        String.format(PagesList.PAGE_NAME_FORMATE, pagesList.getModel().size() + 1));
+        String.format(ConsantList.PAGE_NAME_FORMATE, pagesList.getModel().size() + 1), this);
     pagesList.getModel().addElement(addedPage);
-    add(addedPage, BorderLayout.CENTER);
     pagesList.setSelectedIndex(pagesList.getModel().size() - 1);
+    layersList.setModel(pagesList.getSelectedValue().getLayers());
+    layersList.setSelectedIndex(0);
+    add(addedPage, BorderLayout.CENTER);
+  }
+
+  public void switchPage(int index)
+  {
+    layersList.switchModel(pagesList.getModel().getElementAt(index).getLayers());
+  }
+
+  public void addNewLayerToCurrentPage()
+  {
+    pagesList.getModel().getElementAt(pagesList.getCurrentPageIndex()).addNewLayer();
+    layersList.setSelectedIndex(layersList.getModel().size() - 1);
+  }
+
+  public PresentationPage getSelectedPage()
+  {
+    return pagesList.getSelectedValue();
+  }
+
+  public PresentationLayer getSelectedLayer()
+  {
+    return layersList.getSelectedValue();
+  }
+
+  public float getCurrentStroke()
+  {
+    return ((Double)drawToolbar.getStroke().getValue()).floatValue();
+  }
+
+  public boolean isRubberMode()
+  {
+    return drawToolbar.getDrawRubberBtn().isRubberMode();
   }
 
 }

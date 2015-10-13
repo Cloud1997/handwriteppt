@@ -12,6 +12,7 @@ public class ActionButton extends JButton
     implements ActionListener
 {
   protected JFrame parent;
+  private boolean  isPressed = false;
 
   public ActionButton(JFrame parent)
   {
@@ -51,7 +52,6 @@ public class ActionButton extends JButton
   @Override
   public void actionPerformed(ActionEvent e)
   {
-
   }
 
 }

@@ -1,14 +1,32 @@
 package com.github.handwriteppt;
 
-import java.awt.BorderLayout;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.Toolkit;
+import java.awt.geom.GeneralPath;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class PresentationLayer extends JPanel
 {
-  private String  name;
-  private boolean isHidden;
+  private String              name;
+  private boolean             isHidden         = false;
+  private Shape               newShape;
+  private JFrame              parent;
+  private BufferedImage       image;
+  private Graphics2D          currentG2;
+  private List<BufferedImage> historyImageList = new ArrayList<BufferedImage>();
+  private int                 eraseAreaLength  = 20;
 
   public String getName()
   {
@@ -28,21 +46,80 @@ public class PresentationLayer extends JPanel
   public void setHidden(boolean isHidden)
   {
     this.isHidden = isHidden;
+    setVisible(!isHidden);
+    parent.repaint();
   }
 
-  public PresentationLayer(String name)
+  public PresentationLayer(String name, boolean isOpaque, JFrame parent)
   {
     super();
+    setOpaque(isOpaque);
     this.name = name;
-    setLayout(new BorderLayout());
-    isHidden = false;
+    this.parent = parent;
+  }
+
+  public Graphics2D getGraphics2D()
+  {
+    return currentG2;
+  }
+
+  public void startToDraw(Point startPoint)
+  {
+    if (currentG2 == null)
+    {
+      Toolkit kit = Toolkit.getDefaultToolkit();
+      setBounds(new Rectangle(kit.getScreenSize()));
+    }
+    image = new BufferedImage(getBounds().width, getBounds().height, BufferedImage.TYPE_INT_ARGB);
+    currentG2 = image.createGraphics();
+    currentG2.setColor(Color.black);
+    currentG2.setStroke(
+        new BasicStroke(((DrawPad)parent).getCurrentStroke(), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL));
+    if (!historyImageList.isEmpty())
+    {
+      currentG2.drawImage(historyImageList.get(historyImageList.size() - 1), 0, 0, null);
+    }
+    historyImageList.add(image);
+    if (!((DrawPad)parent).isRubberMode())
+    {
+      currentG2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+      newShape = new GeneralPath();
+      ((GeneralPath)newShape).moveTo(startPoint.getX(), startPoint.getY());
+      currentG2.draw(newShape);
+    }
+    else
+    {
+      currentG2.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
+    }
+  }
+
+  public void erase(Point startPoint)
+  {
+    currentG2.fillRect(startPoint.x, startPoint.y, eraseAreaLength, eraseAreaLength);
+  }
+
+  public void drawLine(Point wayPoint)
+  {
+    ((GeneralPath)newShape).lineTo(wayPoint.getX(), wayPoint.getY());
+    currentG2.draw(newShape);
   }
 
   @Override
-  public void paint(Graphics g)
+  protected void paintComponent(Graphics g)
   {
-    super.paint(g);
-    g.drawString(name, 500, 500);
+    if (!historyImageList.isEmpty())
+    {
+      g.drawImage(historyImageList.get(historyImageList.size() - 1), getBounds().x, getBounds().y,
+          getBounds().width, getBounds().height, null);
+    }
+  }
+
+  public void undoLastDraw()
+  {
+    if (!historyImageList.isEmpty())
+    {
+      historyImageList.remove(historyImageList.size() - 1);
+    }
   }
 
 }
