@@ -1,9 +1,12 @@
 package com.github.handwriteppt.projector.gui.components;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -23,7 +26,6 @@ public class ShowPanel {
 			GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0);
 	private JLayeredPane lp;
 	private FreeDrawBoard drawBoard = new FreeDrawBoard();
-	int width, height;
 
 	public ShowPanel() {
 		initUI();
@@ -54,6 +56,7 @@ public class ShowPanel {
 				if (e.getButton() == MouseEvent.BUTTON1) {
 					if (drawBoard.getStatus() == FreeDrawBoard.DRAWED) {
 						drawBoard.clearBoard();
+						panel.repaint();
 					} else {
 						Projector.getInstance().layerForward();
 					}
@@ -63,9 +66,10 @@ public class ShowPanel {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				if (drawBoard.getStatus() == FreeDrawBoard.NOT_READY && e.getButton() == MouseEvent.BUTTON3) {
+					Dimension dimension=Toolkit.getDefaultToolkit().getScreenSize();
+					drawBoard.setBounds(0, 0, dimension.width, dimension.height);
 					lp.add(drawBoard, Integer.valueOf(-1));
 					lp.moveToFront(drawBoard);
-					drawBoard.setBounds(0, 0, width, height);
 					drawBoard.initDrawer();
 				}
 			}
@@ -97,9 +101,7 @@ public class ShowPanel {
 		for (int i = 1; i <= layer_no; i++) {
 			Layer layer = page.getLayer(i);
 			JLabel image = layer.getImage();
-			width = image.getIcon().getIconWidth();
-			height = image.getIcon().getIconHeight();
-			image.setBounds(0, 0, width, height);
+			image.setBounds(0, 0, image.getIcon().getIconWidth(), image.getIcon().getIconHeight());
 			lp.add(image, Integer.valueOf(layer.getNumber()), layer.getNumber());
 		}
 		panel.repaint();
@@ -124,5 +126,10 @@ public class ShowPanel {
 
 	public JPanel getPanel() {
 		return panel;
+	}
+
+	public void changePenColor(Color c) {
+		drawBoard.changeColor(c);
+		
 	}
 }

@@ -36,6 +36,7 @@ public class FreeDrawBoard extends JLabel {
 			drawer.setStroke(stroke);
 			drawer.setColor(Color.BLUE);
 			status=READY;
+			
 		}
 	}
 	
@@ -46,7 +47,7 @@ public class FreeDrawBoard extends JLabel {
 
 	public void drawToPoint(int x, int y) {
 		if (this.x < 0 || this.y < 0) {
-			drawer.drawLine(x, y, x, y);
+//			drawer.drawLine(x, y, x, y);
 		} else {
 			drawer.drawLine(this.x, this.y, x, y);
 		}
@@ -61,12 +62,13 @@ public class FreeDrawBoard extends JLabel {
 	}
 	
 	public void clearBoard(){
-		repaint();
+
 		status=READY;
 	}
 
 	public void changeColor(Color c) {
 		drawer.setColor(c);
 	}
+
 
 }
