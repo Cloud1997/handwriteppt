@@ -1,29 +1,26 @@
 package com.github.handwriteppt;
 
-import java.awt.event.MouseEvent;
-
 import javax.swing.Icon;
-import javax.swing.JFrame;
 
 public class SaveLabel extends ClickableLabel
 {
 
-  public SaveLabel(Icon image, JFrame controller)
+  public SaveLabel(Icon image)
   {
-    super(image, controller);
+    super(image);
     // TODO Auto-generated constructor stub
   }
 
-  public SaveLabel(String text, JFrame controller)
-  {
-    super(text, controller);
-    // TODO Auto-generated constructor stub
-  }
+//  public SaveLabel(String text, JFrame controller)
+//  {
+//    super(text, controller);
+//    // TODO Auto-generated constructor stub
+//  }
 
   @Override
-  public void mouseClicked(MouseEvent e)
+  public void mouseClicked()
   {
-    ((DrawPad)controller).saveMaterial();
+    DrawPad.getInstance().saveMaterial();
   }
 
 }

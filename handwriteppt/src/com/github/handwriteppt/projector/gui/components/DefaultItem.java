@@ -18,17 +18,17 @@ public class DefaultItem extends ClickableLabel implements Item {
 	public DefaultItem(Icon icon){
 		super(icon);
 	}
-	public DefaultItem(Icon icon,Action action){
+	public DefaultItem(Icon icon,final Action action){
 		this(icon);
 		this.action=action;
 		setPreferredSize(new Dimension(55, 55));
-		addMouseListener(new MouseAdapter() {
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				action.act(new Object[]{null} );
-			}
-		});
+//		addMouseListener(new MouseAdapter() {
+//
+//			@Override
+//			public void mouseClicked(MouseEvent e) {
+//				action.act(new Object[]{null} );
+//			}
+//		});
 	}
 	
 
@@ -41,6 +41,11 @@ public class DefaultItem extends ClickableLabel implements Item {
 	@Override
 	public void run() {
 		action.act(new Object[]{null});
+	}
+	@Override
+	public void mouseClicked() {
+		run();
+		
 	}
 
 }

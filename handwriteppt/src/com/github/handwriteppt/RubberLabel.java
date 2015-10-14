@@ -1,24 +1,22 @@
 package com.github.handwriteppt;
 
 import java.awt.Color;
-import java.awt.event.MouseEvent;
 
 import javax.swing.Icon;
-import javax.swing.JFrame;
 
 public class RubberLabel extends ClickableLabel
 {
   private boolean isPressed = false;
 
-  public RubberLabel(Icon image, JFrame controller)
+  public RubberLabel(Icon image)
   {
-    super(image, controller);
+    super(image);
   }
 
-  public RubberLabel(String text, JFrame controller)
-  {
-    super(text, controller);
-  }
+//  public RubberLabel(String text, JFrame controller)
+//  {
+//    super(text, controller);
+//  }
 
   public boolean isRubberMode()
   {
@@ -32,7 +30,7 @@ public class RubberLabel extends ClickableLabel
   }
 
   @Override
-  public void mouseClicked(MouseEvent e)
+  public void mouseClicked()
   {
     setRubberMode(!isPressed);
   }

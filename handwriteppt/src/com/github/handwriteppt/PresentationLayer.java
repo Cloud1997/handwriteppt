@@ -139,4 +139,9 @@ public class PresentationLayer extends JPanel
     }
   }
 
+public void changePenColor(Color c) {
+	currentG2.setColor(c);
+	
+}
+
 }

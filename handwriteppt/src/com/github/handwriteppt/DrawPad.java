@@ -1,10 +1,14 @@
 package com.github.handwriteppt;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
+import java.awt.Insets;
 import java.io.File;
 import java.util.Properties;
 
@@ -15,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.LineBorder;
 
 /**
  * @author zhongfan
@@ -33,7 +38,7 @@ public class DrawPad extends JFrame
   private JLabel               blankLabel;
   private StrokeSpinner        stroke;
   private RubberLabel          rubberLabel;
-  private JLabel               colorSelectorLabel;
+  private JPanel               colorSelectorLabel;
   private String               saveFolder;
   private String               fileNameFormat   = "%s\\%d-%d.png";
   private static final DrawPad instance         = new DrawPad("Hand Write Board");
@@ -56,7 +61,7 @@ public class DrawPad extends JFrame
     }
   }
 
-  public static final JFrame getInstance()
+  public static final DrawPad getInstance()
   {
     return instance;
   }
@@ -80,20 +85,37 @@ public class DrawPad extends JFrame
   {
     super(title);
   }
+  
 
   private void initialUiComps()
   {
-    toolbarPanel.setLayout(new GridLayout(1, 0));
-    pageListPanel.setLayout(new GridLayout(0, 1));
-    layerListPanel.setLayout(new GridLayout(0, 1));
-    addNewPageLabel = new NewPageLabel(new ImageIcon("res/AddPage.png"), this);
-    addNewLayerLabel = new NewLayerLabel(new ImageIcon("res/AddLayer.png"), this);
-    rubberLabel = new RubberLabel(new ImageIcon("res/Eraser.png"), this);
-    showLabel = new ShowLabel(new ImageIcon("res/show.png"), this);
-    saveLabel = new SaveLabel(new ImageIcon("res/save.png"), this);
-    colorSelectorLabel = new JLabel(new ImageIcon("res/Paint.png"));
+	  GridBagLayout gridBag=new GridBagLayout();
+    toolbarPanel.setLayout(gridBag);
+    pageListPanel.setLayout(gridBag);
+    layerListPanel.setLayout(gridBag);
+    addNewPageLabel = new NewPageLabel(new ImageIcon("res/AddPage.png"));
+    addNewLayerLabel = new NewLayerLabel(new ImageIcon("res/AddLayer.png"));
+    rubberLabel = new RubberLabel(new ImageIcon("res/Eraser.png"));
+    showLabel = new ShowLabel(new ImageIcon("res/show.png"));
+    saveLabel = new SaveLabel(new ImageIcon("res/save.png"));
+    colorSelectorLabel = new ColorChoosePanel(new ImageIcon("res/Paint.png"));
     strokeLabel = new JLabel(new ImageIcon("res/Pen.png"));
+    strokeLabel.setBorder(new LineBorder(Color.black));
     stroke = new StrokeSpinner(1.0, 1.0, 20.0, 0.1);
+    stroke.setPreferredSize(new Dimension(100, 1));
+    stroke.setBorder(new LineBorder(Color.black));
+    stroke.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 32));
+    JPanel strokeSpinnerPanel=new JPanel();
+    strokeSpinnerPanel.setBorder(new LineBorder(Color.black));
+    strokeSpinnerPanel.setLayout(new GridBagLayout());
+    
+    GridBagConstraints gc=GridBagLayoutUtil.getDefaultConstraints();
+    gc.anchor=GridBagConstraints.EAST;
+    gc.fill=GridBagConstraints.VERTICAL;
+    strokeSpinnerPanel.add(strokeLabel,gc);
+    gc.gridx=1;
+    gc.anchor=GridBagConstraints.WEST;
+    strokeSpinnerPanel.add(stroke,gc);
     blankLabel = new JLabel();
     pagesList = new PagesList(this);
     layersList = new LayerList(this);
@@ -106,18 +128,41 @@ public class DrawPad extends JFrame
     {
       addNewPage();
     }
-    toolbarPanel.add(saveLabel);
-    toolbarPanel.add(showLabel);
-    toolbarPanel.add(rubberLabel);
-    toolbarPanel.add(colorSelectorLabel);
-    toolbarPanel.add(strokeLabel);
-    toolbarPanel.add(stroke);
-
-    pageListPanel.add(addNewPageLabel);
-    pageListPanel.add(pagesList);
-
-    layerListPanel.add(addNewLayerLabel);
-    layerListPanel.add(layersList);
+    gc=GridBagLayoutUtil.getDefaultConstraints();
+    toolbarPanel.setBorder(new LineBorder(Color.black));
+    toolbarPanel.add(saveLabel,gc);
+    gc.gridx=1;
+    toolbarPanel.add(showLabel,gc);
+    gc.gridx=2;
+    toolbarPanel.add(rubberLabel,gc);
+    gc.gridx=3;
+    toolbarPanel.add(colorSelectorLabel,gc);
+    gc.gridx=4;
+//    toolbarPanel.add(strokeLabel);
+    toolbarPanel.add(strokeSpinnerPanel,gc);
+    
+    
+    
+    pageListPanel.setBorder(new LineBorder(Color.black));
+    
+     gc=GridBagLayoutUtil.getDefaultConstraints();
+     gc.weighty=0;
+     gc.anchor=GridBagConstraints.NORTH;
+     gc.insets=new Insets(0, 10, 0, 5);
+    pageListPanel.add(addNewPageLabel,gc);
+    gc.gridy=1;
+    gc.weighty=1;
+    pageListPanel.add(pagesList,gc);
+    
+    
+    gc=GridBagLayoutUtil.getDefaultConstraints();
+    gc.weighty=0;
+    gc.anchor=GridBagConstraints.NORTH;
+    layerListPanel.setBorder(new LineBorder(Color.black));
+    layerListPanel.add(addNewLayerLabel,gc);
+    gc.gridy=1;
+    gc.weighty=1;
+    layerListPanel.add(layersList,gc);
 
     add(toolbarPanel, BorderLayout.NORTH);
     add(pageListPanel, BorderLayout.WEST);
@@ -168,6 +213,10 @@ public class DrawPad extends JFrame
   public PresentationLayer getSelectedLayer()
   {
     return layersList.getSelectedValue();
+  }
+  
+  public void changePenColor(Color c){
+	  getSelectedLayer().changePenColor(c);
   }
 
   public float getCurrentStroke()

@@ -1,29 +1,26 @@
 package com.github.handwriteppt;
 
-import java.awt.event.MouseEvent;
-
 import javax.swing.Icon;
-import javax.swing.JFrame;
 
 public class NewLayerLabel extends ClickableLabel
 {
 
-  public NewLayerLabel(String text, JFrame controller)
-  {
-    super(text, controller);
-    // TODO Auto-generated constructor stub
-  }
+//  public NewLayerLabel(String text, JFrame controller)
+//  {
+//    super(text, controller);
+//    // TODO Auto-generated constructor stub
+//  }
 
-  public NewLayerLabel(Icon image, JFrame controller)
+  public NewLayerLabel(Icon image)
   {
-    super(image, controller);
-    // TODO Auto-generated constructor stub
+    super(image);
   }
 
   @Override
-  public void mouseClicked(MouseEvent e)
+  public void mouseClicked()
   {
-    ((DrawPad)controller).addNewLayerToCurrentPage();
+	  DrawPad.getInstance().addNewLayerToCurrentPage();
   }
+
 
 }
