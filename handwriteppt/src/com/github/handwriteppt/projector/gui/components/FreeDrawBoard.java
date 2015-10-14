@@ -15,6 +15,8 @@ public class FreeDrawBoard extends JLabel {
 	public static final int READY=0;
 	public static final int DRAWED=1;
 	private int status=NOT_READY;
+	
+	private Color c=Color.BLUE;
 
 	public int getX() {
 		return x;
@@ -34,7 +36,7 @@ public class FreeDrawBoard extends JLabel {
 			drawer = (Graphics2D) getGraphics();
 			Stroke stroke = new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 			drawer.setStroke(stroke);
-			drawer.setColor(Color.BLUE);
+			drawer.setColor(c);
 			status=READY;
 			
 		}
@@ -62,12 +64,17 @@ public class FreeDrawBoard extends JLabel {
 	}
 	
 	public void clearBoard(){
-
+		
 		status=READY;
 	}
+	
+	
 
 	public void changeColor(Color c) {
+		this.c=c;
+		if(drawer!=null){
 		drawer.setColor(c);
+		}
 	}
 
 
