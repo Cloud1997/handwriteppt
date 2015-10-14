@@ -1,9 +1,9 @@
 package com.github.handwriteppt;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.io.File;
 import java.util.Properties;
@@ -12,6 +12,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -21,7 +22,6 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class DrawPad extends JFrame
 {
-  private DrawPadToolBar       drawToolbar;
   private int                  currentPageIndex = 0;
   private PagesList            pagesList;
   private LayerList            layersList;
@@ -32,13 +32,16 @@ public class DrawPad extends JFrame
   private JLabel               strokeLabel;
   private JLabel               blankLabel;
   private StrokeSpinner        stroke;
-  private JLabel               rubberLabel;
+  private RubberLabel          rubberLabel;
   private JLabel               colorSelectorLabel;
   private String               saveFolder;
   private String               fileNameFormat   = "%s\\%d-%d.png";
   private static final DrawPad instance         = new DrawPad("Hand Write Board");
   private GridBagLayout        layout;
   private GridBagConstraints   cons;
+  private JPanel               toolbarPanel     = new JPanel();
+  private JPanel               pageListPanel    = new JPanel();
+  private JPanel               layerListPanel   = new JPanel();
 
   {
     try
@@ -80,11 +83,9 @@ public class DrawPad extends JFrame
 
   private void initialUiComps()
   {
-    layout = new GridBagLayout();
-    setLayout(layout);
-    cons = new GridBagConstraints();
-    cons.fill = GridBagConstraints.NONE;
-    //drawToolbar = new DrawPadToolBar(this);
+    toolbarPanel.setLayout(new GridLayout(1, 0));
+    pageListPanel.setLayout(new GridLayout(0, 1));
+    layerListPanel.setLayout(new GridLayout(0, 1));
     addNewPageLabel = new NewPageLabel(new ImageIcon("res/AddPage.png"), this);
     addNewLayerLabel = new NewLayerLabel(new ImageIcon("res/AddLayer.png"), this);
     rubberLabel = new RubberLabel(new ImageIcon("res/Eraser.png"), this);
@@ -105,49 +106,26 @@ public class DrawPad extends JFrame
     {
       addNewPage();
     }
-    add(saveLabel);
-    setLayoutCons(saveLabel, 0, 0, 1, 1, 1, 1);
-    add(showLabel);
-    setLayoutCons(showLabel, 1, 0, 1, 1, 1, 1);
-    add(rubberLabel);
-    setLayoutCons(rubberLabel, 2, 0, 1, 1, 1, 1);
-    add(colorSelectorLabel);
-    setLayoutCons(colorSelectorLabel, 3, 0, 1, 1, 1, 1);
-    add(strokeLabel);
-    setLayoutCons(strokeLabel, 4, 0, 1, 1, 1, 1);
-    add(stroke);
-    setLayoutCons(stroke, 5, 0, 1, 1, 1, 1);
-    add(addNewPageLabel);
-    setLayoutCons(addNewPageLabel, 0, 1, 1, 1, 1, 1);
-    add(blankLabel);
-    setLayoutCons(blankLabel, 1, 1, 4, 1, 1, 1);
-    add(addNewLayerLabel);
-    setLayoutCons(addNewLayerLabel, 5, 1, 1, 1, 1, 1);
-    add(pagesList);
-    setLayoutCons(pagesList, 0, 2, 1, 4, 1, 1);
-    add(pagesList.getModel().get(0));
-    setLayoutCons(pagesList.getModel().get(0), 1, 2, 4, 4, 100, 100);
-    add(layersList);
-    setLayoutCons(layersList, 5, 2, 1, 4, 1, 1);
+    toolbarPanel.add(saveLabel);
+    toolbarPanel.add(showLabel);
+    toolbarPanel.add(rubberLabel);
+    toolbarPanel.add(colorSelectorLabel);
+    toolbarPanel.add(strokeLabel);
+    toolbarPanel.add(stroke);
 
-    //    add(drawToolbar, BorderLayout.NORTH);
-    //    add(pagesList, BorderLayout.WEST);
-    //    add(layersList, BorderLayout.EAST);
+    pageListPanel.add(addNewPageLabel);
+    pageListPanel.add(pagesList);
+
+    layerListPanel.add(addNewLayerLabel);
+    layerListPanel.add(layersList);
+
+    add(toolbarPanel, BorderLayout.NORTH);
+    add(pageListPanel, BorderLayout.WEST);
+    add(layerListPanel, BorderLayout.EAST);
     setExtendedState(JFrame.MAXIMIZED_BOTH);
     setVisible(true);
     validate();
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-  }
-
-  private void setLayoutCons(Component comp, int x, int y, int width, int height, int weightx, int weighty)
-  {
-    cons.gridx = x;
-    cons.gridy = y;
-    cons.gridwidth = width;
-    cons.gridheight = height;
-    cons.weightx = weightx;
-    cons.weighty = weighty;
-    layout.setConstraints(comp, cons);
   }
 
   private void loadPagesFromFile(String filePath)
@@ -168,7 +146,7 @@ public class DrawPad extends JFrame
     pagesList.setSelectedIndex(pagesList.getModel().size() - 1);
     layersList.setModel(pagesList.getSelectedValue().getLayers());
     layersList.setSelectedIndex(0);
-    //    add(addedPage, BorderLayout.CENTER);
+    add(addedPage, BorderLayout.CENTER);
   }
 
   public void switchPage(int index)
@@ -194,12 +172,12 @@ public class DrawPad extends JFrame
 
   public float getCurrentStroke()
   {
-    return ((Double)drawToolbar.getStroke().getValue()).floatValue();
+    return ((Double)stroke.getValue()).floatValue();
   }
 
   public boolean isRubberMode()
   {
-    return drawToolbar.getDrawRubberBtn().isRubberMode();
+    return rubberLabel.isRubberMode();
   }
 
   public void saveMaterial()
@@ -234,6 +212,17 @@ public class DrawPad extends JFrame
     if (!materialFolder.exists())
     {
       materialFolder.mkdir();
+    }
+    else
+    {
+      File[] files = materialFolder.listFiles();
+      for (File file : files)
+      {
+        if (file.isFile())
+        {
+          file.delete();
+        }
+      }
     }
   }
 
