@@ -1,5 +1,6 @@
 package com.github.handwriteppt.projector.gui.components;
 
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -7,18 +8,20 @@ import javax.swing.Icon;
 import javax.swing.JLabel;
 
 import com.github.handwriteppt.Action;
+import com.github.handwriteppt.ClickableLabel;
 import com.github.handwriteppt.Item;
 
-public class DefaultItem extends JLabel implements Item {
+public class DefaultItem extends ClickableLabel implements Item {
 
 	protected Action action;
 	
 	public DefaultItem(Icon icon){
-		setIcon(icon);
+		super(icon);
 	}
 	public DefaultItem(Icon icon,Action action){
 		this(icon);
 		this.action=action;
+		setPreferredSize(new Dimension(55, 55));
 		addMouseListener(new MouseAdapter() {
 
 			@Override
