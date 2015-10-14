@@ -1,7 +1,6 @@
 package com.github.handwriteppt.projector;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
@@ -9,8 +8,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JWindow;
 import javax.swing.SwingUtilities;
 
+import com.github.handwriteppt.DrawPad;
 import com.github.handwriteppt.projector.gui.components.ControlPanel;
 import com.github.handwriteppt.projector.gui.components.ShowPanel;
 
@@ -33,10 +31,9 @@ public class Projector {
 	
 	private List<Page> pageList=new ArrayList<Page>();
 	private JPanel mainBoard=new JPanel();
-	private JWindow window=new JWindow();
+	private JWindow window;
 	private ShowPanel showPanel=new ShowPanel();
 	private ControlPanel controlPanel=new ControlPanel();
-	private JPanel blackPanel=new JPanel();
 	private Page currentPage;
 	private Layer currentLayer;
 	private GridBagConstraints gc=new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0);
@@ -48,7 +45,8 @@ public class Projector {
 	}
 	
 	public static void show(String file){
-		instance=new Projector();
+    	instance=new Projector();
+		instance.window=new JWindow(DrawPad.getInstance());
 		instance.load(file);
 	SwingUtilities.invokeLater(new Runnable() {
 			
@@ -56,7 +54,7 @@ public class Projector {
 			public void run() {
 				
 				instance.initComponents();
-				instance.prepareListeners();
+     			instance.prepareListeners();
 				instance.start();
 			}
 		});
@@ -116,12 +114,8 @@ public class Projector {
 		gc.gridy=1;
 		gc.weighty=0;
 		gc.fill=GridBagConstraints.HORIZONTAL;
-		controlPanel.getPanel().setVisible(false);
 		mainBoard.add(controlPanel.getPanel(),gc);
 		gc.gridy=2;
-		blackPanel.setPreferredSize(new Dimension(100, 50));
-//		blackPanel.setBackground(Color.white);
-		mainBoard.add(blackPanel, gc);
 	}
 	
 	
@@ -137,39 +131,21 @@ public class Projector {
 			}
 			
 		});
-		controlPanel.getPanel().addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseExited(MouseEvent e) {
-				if(e.getY()<0)
-				{
-				controlPanelVisible(false);
-				}
-			}
-		});
-		blackPanel.addMouseListener(new MouseAdapter(){
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				controlPanelVisible(true);
-			}
-			
-		});
 	}
 	
-	public void controlPanelVisible(boolean visible){
-		blackPanel.setVisible(!visible);
-		controlPanel.getPanel().setVisible(visible);
-	}
 	
 	public void start(){
 		GraphicsEnvironment  ge=GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice gd=	ge.getDefaultScreenDevice();
 		gd.setFullScreenWindow(window);	
 //		Dimension screen=	Toolkit.getDefaultToolkit().getScreenSize();
-//		window.setPreferredSize(screen);
+//		window.setPreferredSize(new Dimension(640, 480));
 		currentPage=pageList.get(0);
 		currentLayer=currentPage.getLayer(1);
 		showPanel.show(currentPage, 1);
+		window.setFocusable(true);
 		window.setVisible(true);
+		window.requestFocus();
 		
 	}
 	

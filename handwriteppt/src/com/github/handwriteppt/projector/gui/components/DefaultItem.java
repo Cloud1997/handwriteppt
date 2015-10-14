@@ -12,10 +12,8 @@ import com.github.handwriteppt.Item;
 public class DefaultItem extends JLabel implements Item {
 
 	protected Action action;
-//	protected Icon icon;
 	
 	public DefaultItem(Icon icon){
-//		this.icon=icon;
 		setIcon(icon);
 	}
 	public DefaultItem(Icon icon,Action action){

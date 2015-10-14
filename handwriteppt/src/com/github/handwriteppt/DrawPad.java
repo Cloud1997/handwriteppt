@@ -7,6 +7,8 @@ import java.util.Properties;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * @author zhongfan
@@ -14,12 +16,31 @@ import javax.swing.JFrame;
  */
 public class DrawPad extends JFrame
 {
-  private DrawPadToolBar drawToolbar;
-  private int            currentPageIndex = 0;
-  private PagesList      pagesList;
-  private LayerList      layersList;
-  private String         saveFolder;
-  private String         fileNameFormat   = "%s\\%d-%d.png";
+  private DrawPadToolBar       drawToolbar;
+  private int                  currentPageIndex = 0;
+  private PagesList            pagesList;
+  private LayerList            layersList;
+  private String               saveFolder;
+  private String               fileNameFormat   = "%s\\%d-%d.png";
+  private static final DrawPad instance         = new DrawPad("Hand Write Board");
+
+  {
+    try
+    {
+      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    }
+    catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+        | UnsupportedLookAndFeelException e)
+    {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
+  public static final JFrame getInstance()
+  {
+    return instance;
+  }
 
   public int getCurrentPageIndex()
   {
@@ -36,11 +57,9 @@ public class DrawPad extends JFrame
     return pagesList.getModel().getSize();
   }
 
-  public DrawPad(String title) throws HeadlessException
+  private DrawPad(String title) throws HeadlessException
   {
     super(title);
-    //setLayout(new GridBagLayout());
-    initialUiComps();
   }
 
   private void initialUiComps()
@@ -73,7 +92,7 @@ public class DrawPad extends JFrame
 
   public static void main(String[] args)
   {
-    DrawPad drawpad = new DrawPad("test");
+    instance.initialUiComps();
   }
 
   public void addNewPage()
