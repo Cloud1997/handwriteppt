@@ -1,12 +1,18 @@
 package com.github.handwriteppt;
 
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.io.File;
 import java.util.Properties;
 
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -16,13 +22,26 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class DrawPad extends JFrame
 {
-  private DrawPadToolBar       drawToolbar;
   private int                  currentPageIndex = 0;
   private PagesList            pagesList;
   private LayerList            layersList;
+  private JLabel               addNewPageLabel;
+  private JLabel               addNewLayerLabel;
+  private JLabel               showLabel;
+  private JLabel               saveLabel;
+  private JLabel               strokeLabel;
+  private JLabel               blankLabel;
+  private StrokeSpinner        stroke;
+  private RubberLabel          rubberLabel;
+  private JLabel               colorSelectorLabel;
   private String               saveFolder;
   private String               fileNameFormat   = "%s\\%d-%d.png";
   private static final DrawPad instance         = new DrawPad("Hand Write Board");
+  private GridBagLayout        layout;
+  private GridBagConstraints   cons;
+  private JPanel               toolbarPanel     = new JPanel();
+  private JPanel               pageListPanel    = new JPanel();
+  private JPanel               layerListPanel   = new JPanel();
 
   {
     try
@@ -64,7 +83,18 @@ public class DrawPad extends JFrame
 
   private void initialUiComps()
   {
-    drawToolbar = new DrawPadToolBar(this);
+    toolbarPanel.setLayout(new GridLayout(1, 0));
+    pageListPanel.setLayout(new GridLayout(0, 1));
+    layerListPanel.setLayout(new GridLayout(0, 1));
+    addNewPageLabel = new NewPageLabel(new ImageIcon("res/AddPage.png"), this);
+    addNewLayerLabel = new NewLayerLabel(new ImageIcon("res/AddLayer.png"), this);
+    rubberLabel = new RubberLabel(new ImageIcon("res/Eraser.png"), this);
+    showLabel = new ShowLabel(new ImageIcon("res/show.png"), this);
+    saveLabel = new SaveLabel(new ImageIcon("res/save.png"), this);
+    colorSelectorLabel = new JLabel(new ImageIcon("res/Paint.png"));
+    strokeLabel = new JLabel(new ImageIcon("res/Pen.png"));
+    stroke = new StrokeSpinner(1.0, 1.0, 20.0, 0.1);
+    blankLabel = new JLabel();
     pagesList = new PagesList(this);
     layersList = new LayerList(this);
     loadPagesFromFile("");
@@ -76,9 +106,22 @@ public class DrawPad extends JFrame
     {
       addNewPage();
     }
-    add(drawToolbar, BorderLayout.NORTH);
-    add(pagesList, BorderLayout.WEST);
-    add(layersList, BorderLayout.EAST);
+    toolbarPanel.add(saveLabel);
+    toolbarPanel.add(showLabel);
+    toolbarPanel.add(rubberLabel);
+    toolbarPanel.add(colorSelectorLabel);
+    toolbarPanel.add(strokeLabel);
+    toolbarPanel.add(stroke);
+
+    pageListPanel.add(addNewPageLabel);
+    pageListPanel.add(pagesList);
+
+    layerListPanel.add(addNewLayerLabel);
+    layerListPanel.add(layersList);
+
+    add(toolbarPanel, BorderLayout.NORTH);
+    add(pageListPanel, BorderLayout.WEST);
+    add(layerListPanel, BorderLayout.EAST);
     setExtendedState(JFrame.MAXIMIZED_BOTH);
     setVisible(true);
     validate();
@@ -129,12 +172,12 @@ public class DrawPad extends JFrame
 
   public float getCurrentStroke()
   {
-    return ((Double)drawToolbar.getStroke().getValue()).floatValue();
+    return ((Double)stroke.getValue()).floatValue();
   }
 
   public boolean isRubberMode()
   {
-    return drawToolbar.getDrawRubberBtn().isRubberMode();
+    return rubberLabel.isRubberMode();
   }
 
   public void saveMaterial()
@@ -169,6 +212,17 @@ public class DrawPad extends JFrame
     if (!materialFolder.exists())
     {
       materialFolder.mkdir();
+    }
+    else
+    {
+      File[] files = materialFolder.listFiles();
+      for (File file : files)
+      {
+        if (file.isFile())
+        {
+          file.delete();
+        }
+      }
     }
   }
 
