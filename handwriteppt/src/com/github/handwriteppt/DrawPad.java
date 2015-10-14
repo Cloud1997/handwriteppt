@@ -39,6 +39,7 @@ public class DrawPad extends JFrame
   public DrawPad(String title) throws HeadlessException
   {
     super(title);
+    //setLayout(new GridBagLayout());
     initialUiComps();
   }
 

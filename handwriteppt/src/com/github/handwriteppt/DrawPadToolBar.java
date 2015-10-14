@@ -2,6 +2,7 @@ package com.github.handwriteppt;
 
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -11,6 +12,7 @@ public class DrawPadToolBar extends JToolBar
 {
   private JButton   addNewPageBtn;
   private JButton   addNewLayerBtn;
+  private JLabel    addNewPageLabel;
   private JButton   saveBtn;
   private JButton   showBtn;
   private RubberBtn drawRubberBtn;
@@ -65,6 +67,7 @@ public class DrawPadToolBar extends JToolBar
   private void initialToolBar()
   {
     initialToolBarComponents();
+    add(addNewPageLabel);
     add(addNewPageBtn);
     add(addNewLayerBtn);
     add(drawRubberBtn);
@@ -78,8 +81,11 @@ public class DrawPadToolBar extends JToolBar
   private void initialToolBarComponents()
   {
     drawRubberBtn = new RubberBtn(ConsantList.RUBBER, parent);
-    addNewPageBtn = new NewPageBtn(ConsantList.ADD_NEW_PAGE, parent);
-    addNewLayerBtn = new NewLayerBtn(ConsantList.ADD_NEW_LAYER, parent);
+    //addNewPageBtn = new NewPageBtn(ConsantList.ADD_NEW_PAGE, parent);
+    addNewPageBtn = new NewPageBtn(new ImageIcon("res/newPage.png"), parent);
+    //    addNewLayerBtn = new NewLayerBtn(ConsantList.ADD_NEW_LAYER, parent);
+    addNewLayerBtn = new NewLayerBtn(new ImageIcon("res/newLayer.png"), parent);
+    addNewPageLabel = new NewPageLabel(ConsantList.ADD_NEW_PAGE, parent);
     strokeLabel = new JLabel(ConsantList.STROKE);
     stroke = new StrokeSpinner(1.0, 1.0, 20.0, 0.1);
     saveBtn = new SaveBtn(ConsantList.SAVE, parent);
