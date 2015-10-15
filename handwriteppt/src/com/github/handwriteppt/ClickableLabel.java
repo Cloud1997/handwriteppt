@@ -13,9 +13,9 @@ import javax.swing.border.Border;
 public abstract class ClickableLabel extends JLabel
 {
   
-  private static Border upBoader=BorderFactory.createBevelBorder(BevelBorder.RAISED);
-  private static Border downBoader=BorderFactory.createBevelBorder(BevelBorder.LOWERED); 		  
-
+  protected static Border upBoader=BorderFactory.createBevelBorder(BevelBorder.RAISED);
+  protected static Border downBoader=BorderFactory.createBevelBorder(BevelBorder.LOWERED); 		  
+  
   public ClickableLabel(Icon image){
 	  super(image);
 	  setPreferredSize(new Dimension(image.getIconWidth()+5, image.getIconHeight()+5));
@@ -24,22 +24,22 @@ public abstract class ClickableLabel extends JLabel
 		@Override
 		public void mousePressed(MouseEvent e) {
 			if(e.getButton()==MouseEvent.BUTTON1)
-			  setBorder(downBoader);
+				ClickableLabel.this.mousePressed();
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			if(e.getButton()==MouseEvent.BUTTON1)
-			setBorder(upBoader);
+				ClickableLabel.this.mouseReleased();
 		}
 		@Override
 		public void mouseEntered(MouseEvent e) {
-			setBorder(upBoader);
+			ClickableLabel.this.mouseEntered();
 		}
 
 		@Override
 		public void mouseExited(MouseEvent e) {
-			setBorder(null);
+			ClickableLabel.this.mouseExited();
 		}
 
 		@Override
@@ -54,6 +54,24 @@ public abstract class ClickableLabel extends JLabel
   }
 
 
-  public abstract void mouseClicked();
+  protected void mousePressed() {
+	  setBorder(downBoader);
+	
+}
+
+
+  protected abstract void mouseClicked();
+  
+protected void mouseExited(){
+		setBorder(null);
+  }
+  
+protected void mouseEntered(){
+	  setBorder(upBoader);
+  }
+  
+protected void mouseReleased(){
+		setBorder(upBoader);
+  }
 
 }

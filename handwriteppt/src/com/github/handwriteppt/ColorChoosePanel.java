@@ -30,7 +30,7 @@ public class ColorChoosePanel extends JPanel{
 			}};
 	
 		Dimension size=ScreenUtil.getScreenSize();
-		win.setBounds(size.width/2-300, 100, 600, 400);
+		win.setBounds(size.width/2-150, 100, 300, 150);
 		colorChooser=new ClickableLabel(icon){
 
 			@Override

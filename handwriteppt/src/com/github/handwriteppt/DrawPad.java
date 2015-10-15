@@ -95,7 +95,7 @@ public class DrawPad extends JFrame
     layerListPanel.setLayout(gridBag);
     addNewPageLabel = new NewPageLabel(new ImageIcon("res/AddPage.png"));
     addNewLayerLabel = new NewLayerLabel(new ImageIcon("res/AddLayer.png"));
-    rubberLabel = new RubberLabel(new ImageIcon("res/Eraser.png"));
+    rubberLabel = new RubberLabel(new ImageIcon("res/Eraser.png"),new ImageIcon("res/PinkEraser.png"));
     showLabel = new ShowLabel(new ImageIcon("res/show.png"));
     saveLabel = new SaveLabel(new ImageIcon("res/save.png"));
     colorSelectorLabel = new ColorChoosePanel(new ImageIcon("res/Paint.png"));
@@ -134,7 +134,7 @@ public class DrawPad extends JFrame
     gc.gridx=1;
     toolbarPanel.add(showLabel,gc);
     gc.gridx=2;
-    toolbarPanel.add(rubberLabel,gc);
+    toolbarPanel.add(rubberLabel,gc); 
     gc.gridx=3;
     toolbarPanel.add(colorSelectorLabel,gc);
     gc.gridx=4;

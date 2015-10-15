@@ -47,7 +47,7 @@ public abstract class ColorWindow extends JWindow{
 		});
 		
 		JPanel p=new JPanel();
-		p.setPreferredSize(new Dimension(600, 400));
+		p.setPreferredSize(new Dimension(300, 150));
 		setContentPane(p);
 		p.setLayout(new GridBagLayout());
 		GridBagConstraints gc=	GridBagLayoutUtil.getDefaultConstraints();
