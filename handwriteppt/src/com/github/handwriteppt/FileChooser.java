@@ -2,9 +2,11 @@ package com.github.handwriteppt;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -25,7 +27,7 @@ public class FileChooser extends JWindow
   {
     super(owner);
     setFocusable(true);
-    getContentPane().setBackground(Color.green);
+    getContentPane().setBackground(Color.GRAY);
     controller = (DrawPad)owner;
     setLayout(new GridBagLayout());
 
@@ -89,6 +91,8 @@ public class FileChooser extends JWindow
     getContentPane().removeAll();
     int height = 0;
     GridBagConstraints gc = GridBagLayoutUtil.getDefaultConstraints();
+    gc.fill=GridBagConstraints.BOTH;
+    gc.insets=new Insets(2, 2, 2, 2);
     List<String> fileList = controller.getMaterialList();
     int index = 0;
     for (String fileName : fileList)
@@ -102,13 +106,14 @@ public class FileChooser extends JWindow
           controller.showMaterial(getText());
         }
       };
+      fileNameLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 25));
       add(fileNameLabel, gc);
       index++;
       height = height + fileNameLabel.getBounds().height;
     }
     Rectangle rect = DrawPad.getInstance().getBounds();
-    setBounds((rect.x + (rect.width / 2)) - (width / 2), rect.y + 100, width, index * 20);
-    setPreferredSize(new Dimension(width, index * 20));
+    setBounds((rect.x + (rect.width / 2)) - (width / 2), rect.y + 100, width, index * 32);
+    setPreferredSize(new Dimension(width, index * 32));
     pack();
     setVisible(true);
     requestFocus();

@@ -2,11 +2,11 @@ package com.github.handwriteppt;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-
 import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.Point;
@@ -154,6 +154,7 @@ public class DrawPad extends JFrame
     savePanel.add(saveLabel, gc);
     gc.gridx = 1;
     gc.anchor = GridBagConstraints.WEST;
+    savedFileName.setColumns(7);
     savePanel.add(savedFileName, gc);
     savePanel.setBorder(border);
     gc = GridBagLayoutUtil.getDefaultConstraints();
@@ -193,10 +194,15 @@ public class DrawPad extends JFrame
     add(toolbarPanel, BorderLayout.NORTH);
     add(pageListPanel, BorderLayout.WEST);
     add(layerListPanel, BorderLayout.EAST);
+
+    
+    
+    ScreenUtil.setCursor(ScreenUtil.PEN);
+    
     setExtendedState(JFrame.MAXIMIZED_BOTH);
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setVisible(true);
     validate();
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   }
 
   private void loadPagesFromFile(String filePath)

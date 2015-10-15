@@ -1,5 +1,6 @@
 package com.github.handwriteppt;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -17,6 +18,7 @@ public class PagesList extends JList<PresentationPage>
 {
   private boolean isDeleteOpStarted = false;
   private int     currentPageIndex  = 0;
+
 
   public int getCurrentPageIndex()
   {
@@ -47,6 +49,7 @@ public class PagesList extends JList<PresentationPage>
     this.parent = parent;
     addListSelectionListener(this);
     addMouseListener(this);
+    setBackground(ColorsUtil.getTransparentColor());
     setCellRenderer(new PageListCellRender());
   }
 

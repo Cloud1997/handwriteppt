@@ -3,6 +3,8 @@ package com.github.handwriteppt;
 import java.awt.Color;
 
 public class ColorsUtil {
+	
+	  private static Color transp=new Color(0, 0, 0, 0);
 
 	private static Color[] colors=
 			new Color[]{
@@ -97,5 +99,9 @@ public class ColorsUtil {
 //		return colors;
 		return colors;
 
+	}
+	
+	public static Color getTransparentColor(){
+		return transp;
 	}
 }
