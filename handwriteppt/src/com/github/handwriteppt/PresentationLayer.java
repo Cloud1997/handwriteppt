@@ -8,12 +8,10 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.Toolkit;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -28,9 +26,9 @@ public class PresentationLayer extends JPanel
   private JFrame              parent;
   private BufferedImage       image;
   private Graphics2D          currentG2;
-  private List<BufferedImage> historyImageList = new ArrayList<BufferedImage>();
-  private static Color currentColor=Color.black;
-  
+  private List<BufferedImage> historyImageList = new FixedArrayList<BufferedImage>(20);
+  private static Color        currentColor     = Color.black;
+
   public String getName()
   {
     return name;
@@ -70,7 +68,6 @@ public class PresentationLayer extends JPanel
   {
     if (currentG2 == null)
     {
-//      Toolkit kit = Toolkit.getDefaultToolkit();
       setBounds(new Rectangle(ScreenUtil.getScreenSize()));
     }
     image = new BufferedImage(getBounds().width, getBounds().height, BufferedImage.TYPE_INT_ARGB);
@@ -98,7 +95,7 @@ public class PresentationLayer extends JPanel
 
   public void erase(Point startPoint)
   {
-    int clearWidth = Math.round(((DrawPad)parent).getCurrentStroke()) + 2;
+    int clearWidth = Math.round(((DrawPad)parent).getCurrentStroke()) + 20;
     currentG2.fillRect(startPoint.x, startPoint.y, clearWidth, clearWidth);
   }
 
@@ -120,7 +117,7 @@ public class PresentationLayer extends JPanel
 
   public void undoLastDraw()
   {
-    if (!historyImageList.isEmpty())
+    if (historyImageList.size() > 1)
     {
       historyImageList.remove(historyImageList.size() - 1);
     }
@@ -131,7 +128,16 @@ public class PresentationLayer extends JPanel
     File outputFile = new File(fileName);
     try
     {
-      ImageIO.write(historyImageList.get(historyImageList.size() - 1), "png", outputFile);
+      if (historyImageList.isEmpty())
+      {
+        ImageIO.write(new BufferedImage(ScreenUtil.getScreenSize().width, ScreenUtil.getScreenSize().height,
+            BufferedImage.TYPE_INT_ARGB), "png", outputFile);
+      }
+      else
+      {
+        ImageIO.write(historyImageList.get(historyImageList.size() - 1), "png", outputFile);
+      }
+
     }
     catch (IOException e)
     {
@@ -140,9 +146,9 @@ public class PresentationLayer extends JPanel
     }
   }
 
-public void changePenColor(Color c) {
-	currentColor=c;
-	
-}
+  public void changePenColor(Color c)
+  {
+    currentColor = c;
+  }
 
 }

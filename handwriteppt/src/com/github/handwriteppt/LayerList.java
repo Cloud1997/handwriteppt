@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -15,6 +16,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 
 public class LayerList extends JList<PresentationLayer>
     implements MouseListener
@@ -81,7 +83,7 @@ public class LayerList extends JList<PresentationLayer>
       JCheckBox cb = new JCheckBox();
       cb.setSelected(!value.isHidden());
       cb.setBackground(list.getBackground());
-      jp.add(new JLabel(value.getName()));
+      jp.add(new JLabel(value.getName(), new ImageIcon("res/Layer.png"), SwingConstants.CENTER));
       jp.add(cb);
       jp.setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
       jp.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());

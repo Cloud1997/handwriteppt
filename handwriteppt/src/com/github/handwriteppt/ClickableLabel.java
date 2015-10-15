@@ -19,45 +19,69 @@ public abstract class ClickableLabel extends JLabel
   public ClickableLabel(Icon image){
 	  super(image);
 	  setPreferredSize(new Dimension(image.getIconWidth()+5, image.getIconHeight()+5));
-	  addMouseListener(new MouseAdapter() {
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-			if(e.getButton()==MouseEvent.BUTTON1)
-				ClickableLabel.this.mousePressed();
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			if(e.getButton()==MouseEvent.BUTTON1)
-				ClickableLabel.this.mouseReleased();
-		}
-		@Override
-		public void mouseEntered(MouseEvent e) {
-			ClickableLabel.this.mouseEntered();
-		}
-
-		@Override
-		public void mouseExited(MouseEvent e) {
-			ClickableLabel.this.mouseExited();
-		}
-
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			if(e.getButton()==MouseEvent.BUTTON1)
-				ClickableLabel.this.mouseClicked();
-		}
-		
-		
-		  
-	});
+	  addMouseListener(new DynamicBorderMouseListener());
   }
+  
+  public ClickableLabel(String text){
+
+	    super(text);
+	    setPreferredSize(new Dimension(getPreferredSize().width + 5, getPreferredSize().height + 5));
+	    addMouseListener(new DynamicBorderMouseListener());
+
+  }
+
 
 
   protected void mousePressed() {
 	  setBorder(downBoader);
 	
 }
+  
+  private class DynamicBorderMouseListener extends MouseAdapter{
+
+
+      @Override
+      public void mousePressed(MouseEvent e)
+      {
+        if (e.getButton() == MouseEvent.BUTTON1)
+        {
+          setBorder(downBoader);
+        }
+      }
+
+      @Override
+      public void mouseReleased(MouseEvent e)
+      {
+        if (e.getButton() == MouseEvent.BUTTON1)
+        {
+          setBorder(upBoader);
+        }
+      }
+
+      @Override
+      public void mouseEntered(MouseEvent e)
+      {
+        setBorder(upBoader);
+      }
+
+      @Override
+      public void mouseExited(MouseEvent e)
+      {
+        setBorder(null);
+      }
+
+      @Override
+      public void mouseClicked(MouseEvent e)
+      {
+        if (e.getButton() == MouseEvent.BUTTON1)
+        {
+          ClickableLabel.this.mouseClicked();
+        }
+      }
+
+    
+	  
+  }
 
 
   protected abstract void mouseClicked();
