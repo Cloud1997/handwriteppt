@@ -1,6 +1,7 @@
 package com.github.handwriteppt.projector;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
@@ -64,7 +65,7 @@ public class Projector {
 		window.dispose();
 		instance=null;
 	}
-
+	
 	public static void main(String[] args) {
 		show("res/show.zip");
 	}
@@ -138,11 +139,12 @@ public class Projector {
 		GraphicsEnvironment  ge=GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice gd=	ge.getDefaultScreenDevice();
 		gd.setFullScreenWindow(window);	
-//		Dimension screen=	Toolkit.getDefaultToolkit().getScreenSize();
-//		window.setPreferredSize(new Dimension(640, 480));
+//		Dimension screen=	ScreenUtil.getScreenSize();
+//		window.setPreferredSize(new Dimension(1024, 768));
 		currentPage=pageList.get(0);
 		currentLayer=currentPage.getLayer(1);
 		showPanel.show(currentPage, 1);
+//		window.pack();
 		window.setFocusable(true);
 		window.setVisible(true);
 		window.requestFocus();

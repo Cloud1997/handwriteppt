@@ -29,7 +29,8 @@ public class PresentationLayer extends JPanel
   private BufferedImage       image;
   private Graphics2D          currentG2;
   private List<BufferedImage> historyImageList = new ArrayList<BufferedImage>();
-
+  private static Color currentColor=Color.black;
+  
   public String getName()
   {
     return name;
@@ -69,12 +70,12 @@ public class PresentationLayer extends JPanel
   {
     if (currentG2 == null)
     {
-      Toolkit kit = Toolkit.getDefaultToolkit();
-      setBounds(new Rectangle(kit.getScreenSize()));
+//      Toolkit kit = Toolkit.getDefaultToolkit();
+      setBounds(new Rectangle(ScreenUtil.getScreenSize()));
     }
     image = new BufferedImage(getBounds().width, getBounds().height, BufferedImage.TYPE_INT_ARGB);
     currentG2 = image.createGraphics();
-    currentG2.setColor(Color.black);
+    currentG2.setColor(currentColor);
     currentG2.setStroke(
         new BasicStroke(((DrawPad)parent).getCurrentStroke(), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL));
     if (!historyImageList.isEmpty())
@@ -140,7 +141,7 @@ public class PresentationLayer extends JPanel
   }
 
 public void changePenColor(Color c) {
-	currentG2.setColor(c);
+	currentColor=c;
 	
 }
 

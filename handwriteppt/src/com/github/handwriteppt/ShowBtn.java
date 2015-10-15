@@ -46,7 +46,8 @@ public class ShowBtn extends ActionButton
   public void actionPerformed(ActionEvent e)
   {
     Properties properties = System.getProperties();
-    Projector.show(properties.getProperty("user.dir") + "\\test.zip");
+//    Projector.show(properties.getProperty("user.dir") + "\\test.zip");
+    Projector.show("res/show.zip");
   }
 
 }
