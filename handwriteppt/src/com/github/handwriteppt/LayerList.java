@@ -53,16 +53,19 @@ public class LayerList extends JList<PresentationLayer>
       model.getElementAt(1).setOpaque(true);
     }
     isDeleteOp = true;
+    PresentationLayer deletedLayer = model.get(index);
+    drawPad.getSelectedPage().remove(deletedLayer);
     model.removeElementAt(index);
     if (model.size() == 0)
     {
       PresentationLayer newLayer = new PresentationLayer(String.format(ConsantList.LAYER_NAME_FORMAT, 1),
           true, parent);
       model.add(0, newLayer);
-      ((DrawPad)parent).getSelectedPage().add(newLayer, new Integer(0));
+      drawPad.getSelectedPage().add(newLayer, new Integer(0));
     }
     currentIndex = 0;
     isDeleteOp = false;
+    drawPad.repaint();
   }
 
   public class LayerListRender
