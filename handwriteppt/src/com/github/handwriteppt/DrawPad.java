@@ -6,10 +6,13 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import javax.swing.DefaultListModel;
@@ -17,9 +20,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner.NumberEditor;
+import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.LineBorder;
+
+import com.github.handwriteppt.projector.Projector;
 
 /**
  * @author zhongfan
@@ -32,21 +39,24 @@ public class DrawPad extends JFrame
   private LayerList            layersList;
   private JLabel               addNewPageLabel;
   private JLabel               addNewLayerLabel;
-  private JLabel               showLabel;
   private JLabel               saveLabel;
   private JLabel               strokeLabel;
-  private JLabel               blankLabel;
   private StrokeSpinner        stroke;
   private RubberLabel          rubberLabel;
   private JPanel               colorSelectorLabel;
   private String               saveFolder;
   private String               fileNameFormat   = "%s\\%d-%d.png";
   private static final DrawPad instance         = new DrawPad("Hand Write Board");
-  private GridBagLayout        layout;
-  private GridBagConstraints   cons;
   private JPanel               toolbarPanel     = new JPanel();
   private JPanel               pageListPanel    = new JPanel();
   private JPanel               layerListPanel   = new JPanel();
+  private JPanel               savePanel        = new JPanel();
+  private JTextField           savedFileName;
+  private JLabel               fileList;
+  private LineBorder           border           = new LineBorder(Color.black);
+  private Font                 font             = new Font(Font.SANS_SERIF, Font.BOLD, 32);
+  private String               zipExt           = ".zip";
+  private JPanel               showPanel;
 
   {
     try
@@ -85,38 +95,42 @@ public class DrawPad extends JFrame
   {
     super(title);
   }
-  
 
   private void initialUiComps()
   {
-	  GridBagLayout gridBag=new GridBagLayout();
+    GridBagLayout gridBag = new GridBagLayout();
     toolbarPanel.setLayout(gridBag);
     pageListPanel.setLayout(gridBag);
     layerListPanel.setLayout(gridBag);
+    savedFileName = new JTextField();
+    savedFileName.setText("material.zip");
+    savedFileName.setFont(font);
+    savedFileName.setBorder(border);
+    fileList = new MaterialList(new ImageIcon("res/ShowFile.png"));
+    fileList.setBorder(border);
     addNewPageLabel = new NewPageLabel(new ImageIcon("res/AddPage.png"));
     addNewLayerLabel = new NewLayerLabel(new ImageIcon("res/AddLayer.png"));
     rubberLabel = new RubberLabel(new ImageIcon("res/Eraser.png"));
-    showLabel = new ShowLabel(new ImageIcon("res/show.png"));
     saveLabel = new SaveLabel(new ImageIcon("res/save.png"));
+    saveLabel.setBorder(border);
     colorSelectorLabel = new ColorChoosePanel(new ImageIcon("res/Paint.png"));
     strokeLabel = new JLabel(new ImageIcon("res/Pen.png"));
-    strokeLabel.setBorder(new LineBorder(Color.black));
+    strokeLabel.setBorder(border);
     stroke = new StrokeSpinner(1.0, 1.0, 20.0, 0.1);
     stroke.setPreferredSize(new Dimension(100, 1));
-    stroke.setBorder(new LineBorder(Color.black));
-    stroke.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 32));
-    JPanel strokeSpinnerPanel=new JPanel();
-    strokeSpinnerPanel.setBorder(new LineBorder(Color.black));
+    stroke.setBorder(border);
+    stroke.setFont(font);
+    JPanel strokeSpinnerPanel = new JPanel();
+    strokeSpinnerPanel.setBorder(border);
     strokeSpinnerPanel.setLayout(new GridBagLayout());
-    
-    GridBagConstraints gc=GridBagLayoutUtil.getDefaultConstraints();
-    gc.anchor=GridBagConstraints.EAST;
-    gc.fill=GridBagConstraints.VERTICAL;
-    strokeSpinnerPanel.add(strokeLabel,gc);
-    gc.gridx=1;
-    gc.anchor=GridBagConstraints.WEST;
-    strokeSpinnerPanel.add(stroke,gc);
-    blankLabel = new JLabel();
+
+    GridBagConstraints gc = GridBagLayoutUtil.getDefaultConstraints();
+    gc.anchor = GridBagConstraints.EAST;
+    gc.fill = GridBagConstraints.VERTICAL;
+    strokeSpinnerPanel.add(strokeLabel, gc);
+    gc.gridx = 1;
+    gc.anchor = GridBagConstraints.WEST;
+    strokeSpinnerPanel.add(stroke, gc);
     pagesList = new PagesList(this);
     layersList = new LayerList(this);
     loadPagesFromFile("");
@@ -128,41 +142,48 @@ public class DrawPad extends JFrame
     {
       addNewPage();
     }
-    gc=GridBagLayoutUtil.getDefaultConstraints();
-    toolbarPanel.setBorder(new LineBorder(Color.black));
-    toolbarPanel.add(saveLabel,gc);
-    gc.gridx=1;
-    toolbarPanel.add(showLabel,gc);
-    gc.gridx=2;
-    toolbarPanel.add(rubberLabel,gc);
-    gc.gridx=3;
-    toolbarPanel.add(colorSelectorLabel,gc);
-    gc.gridx=4;
-//    toolbarPanel.add(strokeLabel);
-    toolbarPanel.add(strokeSpinnerPanel,gc);
-    
-    
-    
-    pageListPanel.setBorder(new LineBorder(Color.black));
-    
-     gc=GridBagLayoutUtil.getDefaultConstraints();
-     gc.weighty=0;
-     gc.anchor=GridBagConstraints.NORTH;
-     gc.insets=new Insets(0, 10, 0, 5);
-    pageListPanel.add(addNewPageLabel,gc);
-    gc.gridy=1;
-    gc.weighty=1;
-    pageListPanel.add(pagesList,gc);
-    
-    
-    gc=GridBagLayoutUtil.getDefaultConstraints();
-    gc.weighty=0;
-    gc.anchor=GridBagConstraints.NORTH;
-    layerListPanel.setBorder(new LineBorder(Color.black));
-    layerListPanel.add(addNewLayerLabel,gc);
-    gc.gridy=1;
-    gc.weighty=1;
-    layerListPanel.add(layersList,gc);
+    gc = GridBagLayoutUtil.getDefaultConstraints();
+    gc.anchor = GridBagConstraints.EAST;
+    gc.fill = GridBagConstraints.VERTICAL;
+    savePanel.setLayout(new GridBagLayout());
+    savePanel.add(saveLabel, gc);
+    gc.gridx = 1;
+    gc.anchor = GridBagConstraints.WEST;
+    savePanel.add(savedFileName, gc);
+    savePanel.setBorder(border);
+    gc = GridBagLayoutUtil.getDefaultConstraints();
+    toolbarPanel.setBorder(border);
+    toolbarPanel.add(savePanel, gc);
+    gc.gridx = 2;
+    showPanel = new ShowMaterialPanel();
+    toolbarPanel.add(showPanel, gc);
+    gc.gridx = 3;
+    toolbarPanel.add(rubberLabel, gc);
+    gc.gridx = 4;
+    toolbarPanel.add(colorSelectorLabel, gc);
+    gc.gridx = 5;
+    //    toolbarPanel.add(strokeLabel);
+    toolbarPanel.add(strokeSpinnerPanel, gc);
+
+    pageListPanel.setBorder(border);
+
+    gc = GridBagLayoutUtil.getDefaultConstraints();
+    gc.weighty = 0;
+    gc.anchor = GridBagConstraints.NORTH;
+    gc.insets = new Insets(0, 10, 0, 5);
+    pageListPanel.add(addNewPageLabel, gc);
+    gc.gridy = 1;
+    gc.weighty = 1;
+    pageListPanel.add(pagesList, gc);
+
+    gc = GridBagLayoutUtil.getDefaultConstraints();
+    gc.weighty = 0;
+    gc.anchor = GridBagConstraints.NORTH;
+    layerListPanel.setBorder(border);
+    layerListPanel.add(addNewLayerLabel, gc);
+    gc.gridy = 1;
+    gc.weighty = 1;
+    layerListPanel.add(layersList, gc);
 
     add(toolbarPanel, BorderLayout.NORTH);
     add(pageListPanel, BorderLayout.WEST);
@@ -197,12 +218,13 @@ public class DrawPad extends JFrame
   public void switchPage(int index)
   {
     layersList.switchModel(pagesList.getModel().getElementAt(index).getLayers());
+    layersList.setSelectedIndex(0);
   }
 
   public void addNewLayerToCurrentPage()
   {
     pagesList.getModel().getElementAt(pagesList.getCurrentPageIndex()).addNewLayer();
-    layersList.setSelectedIndex(layersList.getModel().size() - 1);
+    layersList.setSelectedIndex(0);
   }
 
   public PresentationPage getSelectedPage()
@@ -214,14 +236,29 @@ public class DrawPad extends JFrame
   {
     return layersList.getSelectedValue();
   }
-  
-  public void changePenColor(Color c){
-	  getSelectedLayer().changePenColor(c);
+
+  public void changePenColor(Color c)
+  {
+    getSelectedLayer().changePenColor(c);
   }
 
   public float getCurrentStroke()
   {
-    return ((Double)stroke.getValue()).floatValue();
+    String strokeStr = ((NumberEditor)stroke.getEditor()).getTextField().getText();
+    try
+    {
+      float strokeVal = Float.valueOf(strokeStr);
+      if (strokeVal > 20.0)
+      {
+        strokeVal = 20.0f;
+      }
+      stroke.setValue(strokeVal);
+    }
+    catch (Exception e)
+    {
+      stroke.setValue(stroke.getValue());
+    }
+    return (float)stroke.getValue();
   }
 
   public boolean isRubberMode()
@@ -229,7 +266,14 @@ public class DrawPad extends JFrame
     return rubberLabel.isRubberMode();
   }
 
-  public void saveMaterial()
+  public void showMaterial(String fileName)
+  {
+    Properties properties = System.getProperties();
+    String currentFolder = properties.getProperty("user.dir");
+    Projector.show(currentFolder + "\\" + fileName);
+  }
+
+  public void saveMaterial(String destFilePath)
   {
     createMaterialFolderIfNeeded();
     for (int i = 0; i < pagesList.getModel().size(); i++)
@@ -243,13 +287,26 @@ public class DrawPad extends JFrame
     }
     try
     {
-      Properties properties = System.getProperties();
-      ZipUtils.compress(saveFolder, properties.getProperty("user.dir") + "\\test.zip");
+      ZipUtils.compress(saveFolder, destFilePath);
     }
     catch (Exception e)
     {
       // TODO Auto-generated catch block
       e.printStackTrace();
+    }
+  }
+
+  public String getCurrentFileName()
+  {
+    Properties properties = System.getProperties();
+    String currentFolder = properties.getProperty("user.dir");
+    if (!savedFileName.getText().endsWith(zipExt))
+    {
+      return currentFolder + "\\" + savedFileName.getText() + zipExt;
+    }
+    else
+    {
+      return currentFolder + "\\" + savedFileName.getText();
     }
   }
 
@@ -273,6 +330,32 @@ public class DrawPad extends JFrame
         }
       }
     }
+  }
+
+  public List<String> getMaterialList()
+  {
+    List<String> fileList = new ArrayList<String>();
+    Properties properties = System.getProperties();
+    File currentFolder = new File(properties.getProperty("user.dir"));
+    File[] childrenFiles = currentFolder.listFiles();
+    for (File file : childrenFiles)
+    {
+      if (file.isFile())
+      {
+        String fileName = file.getName();
+        if (fileName.endsWith(zipExt))
+        {
+          fileList.add(fileName);
+        }
+      }
+    }
+    return fileList;
+  }
+
+  public Point getFileListPos()
+  {
+    Rectangle rect = showPanel.getBounds();
+    return new Point(rect.x + 17, rect.y + rect.height + 17);
   }
 
 }

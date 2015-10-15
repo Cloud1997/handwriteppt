@@ -68,6 +68,10 @@ public class PresentationPage extends JLayeredPane
   public void mouseDragged(MouseEvent e)
   {
     DrawPad drawPad = (DrawPad)parent;
+    if (drawPad.getSelectedLayer().isHidden())
+    {
+      return;
+    }
     if (isLeftButtonPressed)
     {
       if (drawPad.isRubberMode())
@@ -100,6 +104,10 @@ public class PresentationPage extends JLayeredPane
   public void mousePressed(MouseEvent e)
   {
     DrawPad drawPad = (DrawPad)parent;
+    if (drawPad.getSelectedLayer().isHidden())
+    {
+      return;
+    }
     if (e.getButton() == MouseEvent.BUTTON1)
     {
       isLeftButtonPressed = true;

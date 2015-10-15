@@ -12,47 +12,106 @@ import javax.swing.border.Border;
 
 public abstract class ClickableLabel extends JLabel
 {
-  
-  private static Border upBoader=BorderFactory.createBevelBorder(BevelBorder.RAISED);
-  private static Border downBoader=BorderFactory.createBevelBorder(BevelBorder.LOWERED); 		  
 
-  public ClickableLabel(Icon image){
-	  super(image);
-	  setPreferredSize(new Dimension(image.getIconWidth()+5, image.getIconHeight()+5));
-	  addMouseListener(new MouseAdapter() {
+  private static Border upBoader   = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+  private static Border downBoader = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
 
-		@Override
-		public void mousePressed(MouseEvent e) {
-			if(e.getButton()==MouseEvent.BUTTON1)
-			  setBorder(downBoader);
-		}
+  public ClickableLabel(String text)
+  {
+    super(text);
+    setPreferredSize(new Dimension(getPreferredSize().width + 5, getPreferredSize().height + 5));
+    addMouseListener(new MouseAdapter() {
 
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			if(e.getButton()==MouseEvent.BUTTON1)
-			setBorder(upBoader);
-		}
-		@Override
-		public void mouseEntered(MouseEvent e) {
-			setBorder(upBoader);
-		}
+      @Override
+      public void mousePressed(MouseEvent e)
+      {
+        if (e.getButton() == MouseEvent.BUTTON1)
+        {
+          setBorder(downBoader);
+        }
+      }
 
-		@Override
-		public void mouseExited(MouseEvent e) {
-			setBorder(null);
-		}
+      @Override
+      public void mouseReleased(MouseEvent e)
+      {
+        if (e.getButton() == MouseEvent.BUTTON1)
+        {
+          setBorder(upBoader);
+        }
+      }
 
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			if(e.getButton()==MouseEvent.BUTTON1)
-				ClickableLabel.this.mouseClicked();
-		}
-		
-		
-		  
-	});
+      @Override
+      public void mouseEntered(MouseEvent e)
+      {
+        setBorder(upBoader);
+      }
+
+      @Override
+      public void mouseExited(MouseEvent e)
+      {
+        setBorder(null);
+      }
+
+      @Override
+      public void mouseClicked(MouseEvent e)
+      {
+        if (e.getButton() == MouseEvent.BUTTON1)
+        {
+          ClickableLabel.this.mouseClicked();
+        }
+      }
+
+    });
+
   }
 
+  public ClickableLabel(Icon image)
+  {
+    super(image);
+    setPreferredSize(new Dimension(image.getIconWidth() + 5, image.getIconHeight() + 5));
+    addMouseListener(new MouseAdapter() {
+
+      @Override
+      public void mousePressed(MouseEvent e)
+      {
+        if (e.getButton() == MouseEvent.BUTTON1)
+        {
+          setBorder(downBoader);
+        }
+      }
+
+      @Override
+      public void mouseReleased(MouseEvent e)
+      {
+        if (e.getButton() == MouseEvent.BUTTON1)
+        {
+          setBorder(upBoader);
+        }
+      }
+
+      @Override
+      public void mouseEntered(MouseEvent e)
+      {
+        setBorder(upBoader);
+      }
+
+      @Override
+      public void mouseExited(MouseEvent e)
+      {
+        setBorder(null);
+      }
+
+      @Override
+      public void mouseClicked(MouseEvent e)
+      {
+        if (e.getButton() == MouseEvent.BUTTON1)
+        {
+          ClickableLabel.this.mouseClicked();
+        }
+      }
+
+    });
+  }
 
   public abstract void mouseClicked();
 

@@ -1,9 +1,12 @@
 package com.github.handwriteppt;
 
+import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -44,6 +47,7 @@ public class PagesList extends JList<PresentationPage>
     this.parent = parent;
     addListSelectionListener(this);
     addMouseListener(this);
+    setCellRenderer(new PageListCellRender());
   }
 
   @Override
@@ -130,6 +134,22 @@ public class PagesList extends JList<PresentationPage>
     }
     isDeleteOpStarted = false;
     setSelectedIndex(currentPageIndex);
+  }
+
+  private class PageListCellRender extends DefaultListCellRenderer
+  {
+
+    @Override
+    public Component getListCellRendererComponent(JList< ? > list, Object value, int index,
+        boolean isSelected, boolean cellHasFocus)
+    {
+      setIcon(new ImageIcon("res/Page.png"));
+      setText(value.toString());
+      setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
+      setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
+      return this;
+    }
+
   }
 
 }
