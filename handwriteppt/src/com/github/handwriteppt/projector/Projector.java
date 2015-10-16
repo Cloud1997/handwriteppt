@@ -31,16 +31,14 @@ import com.github.handwriteppt.projector.gui.components.ShowPanel;
 public class Projector
 {
 
-  private List<Page>         pageList     = new ArrayList<Page>();
-  private JPanel             mainBoard    = new JPanel();
+  private List<Page>         pageList ;
+  private JPanel             mainBoard;
   private JWindow            window;
-  private ShowPanel          showPanel    = new ShowPanel();
-  private ControlPanel       controlPanel = new ControlPanel();
+  private ShowPanel          showPanel  ;
+  private ControlPanel       controlPanel;
   private Page               currentPage;
   private Layer              currentLayer;
-  private GridBagConstraints gc           = new GridBagConstraints(0, 0, 1, 1, 1, 1,
-      GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0);
-
+  private GridBagConstraints gc;           
   private static Projector   instance;
 
   public static Projector getInstance()
@@ -50,8 +48,11 @@ public class Projector
 
   public static void show(String file)
   {
-    instance = new Projector();
-    instance.window = new JWindow(DrawPad.getInstance());
+	  if(instance==null){
+     instance = new Projector();
+	  }
+	
+   
     instance.load(file);
     SwingUtilities.invokeLater(new Runnable() {
 
@@ -68,8 +69,14 @@ public class Projector
 
   public void close()
   {
-    window.dispose();
-    instance = null;
+  window.dispose();
+  window=null;
+  if(pageList!=null){
+	  pageList.clear();
+	  pageList=null;
+  }
+  currentPage=null;
+  currentLayer=null;
     DrawPad.getInstance().setExtendedState(JFrame.MAXIMIZED_BOTH);
   }
 
@@ -82,6 +89,7 @@ public class Projector
   {
     try
     {
+    	pageList     = new ArrayList<Page>();
       byte[] caches = new byte[2048];
       ZipFile zf = new ZipFile(new File(file), ZipFile.OPEN_READ);
       Enumeration enu = zf.entries();
@@ -123,6 +131,13 @@ public class Projector
 
   public void initComponents()
   {
+	  window = new JWindow(DrawPad.getInstance());
+	  mainBoard    = new JPanel();
+	  showPanel    = new ShowPanel();
+	  controlPanel = new ControlPanel();
+	  gc= new GridBagConstraints(0, 0, 1, 1, 1, 1,
+		      GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0);
+
 
     window.setContentPane(mainBoard);
     mainBoard.setOpaque(true);
@@ -132,7 +147,6 @@ public class Projector
     gc.weighty = 0;
     gc.fill = GridBagConstraints.HORIZONTAL;
     mainBoard.add(controlPanel.getPanel(), gc);
-    gc.gridy = 2;
   }
 
   private void prepareListeners()
