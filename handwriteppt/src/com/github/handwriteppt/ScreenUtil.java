@@ -29,10 +29,10 @@ public class ScreenUtil {
 	
 	public static void setCursor(int type){
 		if(pen==null){
-			pen=Toolkit.getDefaultToolkit().createCustomCursor(new ImageIcon("res/Pen.png").getImage(), new Point(0,30), "Pen");
+			pen=Toolkit.getDefaultToolkit().createCustomCursor(new ImageIcon("res/PenCursor.png").getImage(), new Point(0,30), "Pen");
 		}
 		if(eraser==null){
-			eraser=Toolkit.getDefaultToolkit().createCustomCursor(new ImageIcon("res/PinkEraser.png").getImage(), new Point(0,15), "Eraser");
+			eraser=Toolkit.getDefaultToolkit().createCustomCursor(new ImageIcon("res/EraserCursor.png").getImage(), new Point(0,15), "Eraser");
 		}
 		
 		if(type==PEN){

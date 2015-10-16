@@ -17,106 +17,78 @@ import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JWindow;
 
-public class FileChooser extends JWindow
-{
+public class FileChooser extends JWindow {
 
-  private DrawPad controller;
-  private int     width = 500;
+	private DrawPad controller;
+	private int width = 500;
+	private Color bg = new Color(192,192,192);
 
-  public FileChooser(Frame owner)
-  {
-    super(owner);
-    setFocusable(true);
-    getContentPane().setBackground(Color.GRAY);
-    controller = (DrawPad)owner;
-    setLayout(new GridBagLayout());
+	public FileChooser(Frame owner) {
+		super(owner);
+		setFocusable(true);
+		getContentPane().setBackground(bg);
+		controller = (DrawPad) owner;
+		setLayout(new GridBagLayout());
 
-    addFocusListener(new FocusListener() {
+		addFocusListener(new FocusListener() {
 
-      @Override
-      public void focusLost(FocusEvent e)
-      {
-        setVisible(false);
-      }
+			@Override
+			public void focusLost(FocusEvent e) {
+				setVisible(false);
+			}
 
-      @Override
-      public void focusGained(FocusEvent e)
-      {
-        // TODO Auto-generated method stub
+			@Override
+			public void focusGained(FocusEvent e) {
+				// TODO Auto-generated method stub
 
-      }
-    });
-    addMouseListener(new MouseListener() {
+			}
+		});
+	}
 
-      @Override
-      public void mouseReleased(MouseEvent e)
-      {
-        // TODO Auto-generated method stub
+	public void pop() {
+		getContentPane().removeAll();
+		int height = 0;
+		GridBagConstraints gc = GridBagLayoutUtil.getDefaultConstraints();
+		gc.fill = GridBagConstraints.BOTH;
+		gc.insets = new Insets(2, 2, 2, 2);
+		List<String> fileList = controller.getMaterialList();
+		int index = 0;
+		for (String fileName : fileList) {
+			gc.gridy = index;
+			JLabel fileNameLabel = new ClickableLabel(fileName) {
 
-      }
+				
+				@Override
+				protected void mouseExited() {
+					// TODO Auto-generated method stub
+					super.mouseExited();
+					setForeground(Color.black);
+				}
 
-      @Override
-      public void mousePressed(MouseEvent e)
-      {
-        // TODO Auto-generated method stub
+				@Override
+				protected void mouseEntered() {
+					super.mouseEntered();
+					
+					setForeground(Color.green);
+					
+				}
 
-      }
-
-      @Override
-      public void mouseExited(MouseEvent e)
-      {
-        // TODO Auto-generated method stub
-
-      }
-
-      @Override
-      public void mouseEntered(MouseEvent e)
-      {
-        // TODO Auto-generated method stub
-
-      }
-
-      @Override
-      public void mouseClicked(MouseEvent e)
-      {
-        if (getComponentAt(e.getPoint()) instanceof JLabel)
-        {
-        }
-      }
-    });
-  }
-
-  public void pop()
-  {
-    getContentPane().removeAll();
-    int height = 0;
-    GridBagConstraints gc = GridBagLayoutUtil.getDefaultConstraints();
-    gc.fill=GridBagConstraints.BOTH;
-    gc.insets=new Insets(2, 2, 2, 2);
-    List<String> fileList = controller.getMaterialList();
-    int index = 0;
-    for (String fileName : fileList)
-    {
-      gc.gridy = index;
-      JLabel fileNameLabel = new ClickableLabel(fileName) {
-
-        @Override
-        public void mouseClicked()
-        {
-          controller.showMaterial(getText());
-        }
-      };
-      fileNameLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 25));
-      add(fileNameLabel, gc);
-      index++;
-      height = height + fileNameLabel.getBounds().height;
-    }
-    Rectangle rect = DrawPad.getInstance().getBounds();
-    setBounds((rect.x + (rect.width / 2)) - (width / 2), rect.y + 100, width, index * 32);
-    setPreferredSize(new Dimension(width, index * 32));
-    pack();
-    setVisible(true);
-    requestFocus();
-  }
+				@Override
+				public void mouseClicked() {
+					controller.showMaterial(getText());
+				}
+			};
+			fileNameLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 25));
+			add(fileNameLabel, gc);
+			index++;
+			height = height + fileNameLabel.getBounds().height;
+		}
+		Rectangle rect = DrawPad.getInstance().getBounds();
+		setBounds((rect.x + (rect.width / 2)) - (width / 2), rect.y + 100, width, index * 32);
+		setPreferredSize(new Dimension(width, index * 32));
+		pack();
+		setVisible(true);
+		requestFocus();
+	}
 
 }
