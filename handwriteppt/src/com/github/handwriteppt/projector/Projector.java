@@ -255,4 +255,9 @@ public class Projector
 
   }
 
+public void updatePageNo(int number) {
+	controlPanel.updatePageNo(number);
+	
+}
+
 }
