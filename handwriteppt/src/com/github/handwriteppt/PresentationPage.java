@@ -55,7 +55,7 @@ public class PresentationPage extends JLayeredPane
     PresentationLayer newLayer = new PresentationLayer(
         String.format(ConsantList.LAYER_NAME_FORMAT, layers.size() + 1), false, parent);
     layers.add(0, newLayer);
-    add(newLayer, new Integer(0));
+    add(newLayer,  Integer.valueOf(layers.size()-1));
   }
 
   @Override
