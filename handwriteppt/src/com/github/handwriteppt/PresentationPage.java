@@ -127,8 +127,12 @@ public class PresentationPage extends JLayeredPane
     if (e.getButton() == MouseEvent.BUTTON3)
     {
       ((DrawPad)parent).getSelectedLayer().undoLastDraw();
-      parent.repaint();
     }
+    else if ((e.getButton() == MouseEvent.BUTTON1) && ((DrawPad)parent).isRubberMode())
+    {
+      ((DrawPad)parent).getSelectedLayer().eraseEnd();
+    }
+    parent.repaint();
 
   }
 
