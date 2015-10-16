@@ -22,9 +22,9 @@ public class LayerList extends JList<PresentationLayer>
     implements MouseListener
 {
   private JFrame          parent;
-  private LayerListRender cellRender   = new LayerListRender();
-  private int             currentIndex = 0;
-  private boolean         isDeleteOp   = false;
+  private LayerListRender cellRender = new LayerListRender();
+  private int             lastIndex  = 0;
+  private boolean         isDeleteOp = false;
 
   public LayerList(JFrame parent)
   {
@@ -33,6 +33,7 @@ public class LayerList extends JList<PresentationLayer>
     this.parent = parent;
     setCellRenderer(cellRender);
     addMouseListener(this);
+    setOpaque(false);
   }
 
   @Override
@@ -65,7 +66,7 @@ public class LayerList extends JList<PresentationLayer>
       model.add(0, newLayer);
       drawPad.getSelectedPage().add(newLayer, new Integer(0));
     }
-    currentIndex = 0;
+    lastIndex = 0;
     isDeleteOp = false;
     drawPad.repaint();
   }
@@ -80,13 +81,15 @@ public class LayerList extends JList<PresentationLayer>
         PresentationLayer value, int index, boolean isSelected, boolean cellHasFocus)
     {
       jp.removeAll();
+      jp.setOpaque(false);
       JCheckBox cb = new JCheckBox();
       cb.setSelected(!value.isHidden());
-      cb.setBackground(list.getBackground());
-      jp.add(new JLabel(value.getName(), new ImageIcon("res/Layer.png"), SwingConstants.CENTER));
+      cb.setOpaque(false);
+      JLabel layerName = new JLabel(value.getName(), new ImageIcon("res/Layer.png"), SwingConstants.CENTER);
+      layerName.setOpaque(true);
+      layerName.setBackground(isSelected ? list.getSelectionBackground() : ColorsUtil.getTransparentColor());
+      jp.add(layerName);
       jp.add(cb);
-      jp.setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
-      jp.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
       return jp;
     }
 
