@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -109,24 +110,24 @@ public class DrawPad extends JFrame
     savedFileName = new JTextField();
     savedFileName.setText("material.zip");
     savedFileName.setFont(font);
-    savedFileName.setBorder(border);
+//    savedFileName.setBorder(border);
     fileList = new MaterialList(new ImageIcon("res/ShowFile.png"));
-    fileList.setBorder(border);
+//    fileList.setBorder(border);
     addNewPageLabel = new NewPageLabel(new ImageIcon("res/AddPage.png"));
     addNewLayerLabel = new NewLayerLabel(new ImageIcon("res/AddLayer.png"));
     rubberLabel = new RubberLabel(new ImageIcon("res/Eraser.png"),new ImageIcon("res/PinkEraser.png"));
 
     saveLabel = new SaveLabel(new ImageIcon("res/save.png"));
-    saveLabel.setBorder(border);
+//    saveLabel.setBorder(border);
     colorSelectorLabel = new ColorChoosePanel(new ImageIcon("res/Paint.png"));
     strokeLabel = new JLabel(new ImageIcon("res/Pen.png"));
-    strokeLabel.setBorder(border);
+//    strokeLabel.setBorder(border);
     stroke = new StrokeSpinner(1.0, 1.0, 20.0, 0.1);
     stroke.setPreferredSize(new Dimension(100, 1));
-    stroke.setBorder(border);
+//    stroke.setBorder(border);
     stroke.setFont(font);
     JPanel strokeSpinnerPanel = new JPanel();
-    strokeSpinnerPanel.setBorder(border);
+//    strokeSpinnerPanel.setBorder(border);
     strokeSpinnerPanel.setLayout(new GridBagLayout());
 
     GridBagConstraints gc = GridBagLayoutUtil.getDefaultConstraints();
@@ -156,9 +157,9 @@ public class DrawPad extends JFrame
     gc.anchor = GridBagConstraints.WEST;
     savedFileName.setColumns(7);
     savePanel.add(savedFileName, gc);
-    savePanel.setBorder(border);
+//    savePanel.setBorder(border);
     gc = GridBagLayoutUtil.getDefaultConstraints();
-    toolbarPanel.setBorder(border);
+    toolbarPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black));
     toolbarPanel.add(savePanel, gc);
     gc.gridx = 2;
     showPanel = new ShowMaterialPanel();
@@ -171,7 +172,7 @@ public class DrawPad extends JFrame
     //    toolbarPanel.add(strokeLabel);
     toolbarPanel.add(strokeSpinnerPanel, gc);
 
-    pageListPanel.setBorder(border);
+    pageListPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.black));
 
     gc = GridBagLayoutUtil.getDefaultConstraints();
     gc.weighty = 0;
@@ -185,7 +186,7 @@ public class DrawPad extends JFrame
     gc = GridBagLayoutUtil.getDefaultConstraints();
     gc.weighty = 0;
     gc.anchor = GridBagConstraints.NORTH;
-    layerListPanel.setBorder(border);
+    layerListPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.black));
     layerListPanel.add(addNewLayerLabel, gc);
     gc.gridy = 1;
     gc.weighty = 1;

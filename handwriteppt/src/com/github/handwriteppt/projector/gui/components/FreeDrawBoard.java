@@ -16,7 +16,7 @@ public class FreeDrawBoard extends JLabel {
 	public static final int DRAWED=1;
 	private int status=NOT_READY;
 	
-	private Color c=Color.BLUE;
+	private static Color c=Color.BLUE;
 
 	public int getX() {
 		return x;
