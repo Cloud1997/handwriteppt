@@ -105,6 +105,7 @@ public class ShowPanel {
 			lp.add(image, Integer.valueOf(layer.getNumber()), layer.getNumber());
 		}
 		panel.repaint();
+		Projector.getInstance().updatePageNo(page.getNumber());
 	}
 
 	public void showLayer(int layer_no) {
